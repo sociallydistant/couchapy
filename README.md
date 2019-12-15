@@ -1,2 +1,2 @@
-# ottoman
+# Relaxed
 A python library for CouchDB
