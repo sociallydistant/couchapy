@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = relaxed
+include = */relaxed/*
+omit =
+    */setup.py
