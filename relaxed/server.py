@@ -45,23 +45,23 @@ class Server():
   def get_active_tasks(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_all_dbs', filter_format=__ALLOWED_KEYS__ALL_DBS__GET)
+  @CouchDBDecorators.endpoint('/_all_dbs', query_keys=__ALLOWED_KEYS__ALL_DBS__GET)
   def get_database_names(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_dbs_info', method='post', filter_format=__ALLOWED_KEYS__DBS_INFO__POST)
+  @CouchDBDecorators.endpoint('/_dbs_info', method='post', data_keys=__ALLOWED_KEYS__DBS_INFO__POST)
   def get_databases(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_cluster_setup', filter_format=__ALLOWED_KEYS__CLUSTER_SETUP__GET)
+  @CouchDBDecorators.endpoint('/_cluster_setup', query_keys=__ALLOWED_KEYS__CLUSTER_SETUP__GET)
   def get_cluster_setup(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_cluster_setup', method='post', filter_format=__ALLOWED_KEYS__CLUSTER_SETUP__POST)
+  @CouchDBDecorators.endpoint('/_cluster_setup', method='post', data_keys=__ALLOWED_KEYS__CLUSTER_SETUP__POST)
   def configure_cluster_setup(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_db_updates', method='post', filter_format=__ALLOWED_KEYS__DB_UPDATES__GET)
+  @CouchDBDecorators.endpoint('/_db_updates', method='post', query_keys=__ALLOWED_KEYS__DB_UPDATES__GET)
   def get_database_updates(self, couch_data):
     return couch_data
 
@@ -69,25 +69,25 @@ class Server():
   def get_membership(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_replicate', method='post', filter_format=__ALLOWED_KEYS__REPLICATE__POST)
+  @CouchDBDecorators.endpoint('/_replicate', method='post', data_keys=__ALLOWED_KEYS__REPLICATE__POST)
   def replicate(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_scheduler/jobs', filter_format=__ALLOWED_KEYS__SCHEDULER_JOBS__GET)
+  @CouchDBDecorators.endpoint('/_scheduler/jobs', query_keys=__ALLOWED_KEYS__SCHEDULER_JOBS__GET)
   def get_replication_updates(self, couch_data):
     """
     Retrieves the status of replication jobs that are currently active.
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_scheduler/docs', filter_format=__ALLOWED_KEYS__SCHEDULER_DOCS__GET)
+  @CouchDBDecorators.endpoint('/_scheduler/docs', query_keys=__ALLOWED_KEYS__SCHEDULER_DOCS__GET)
   def get_replication_docs(self, couch_data):
     """
     All Replication documents
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_scheduler/docs/:db:', filter_format=__ALLOWED_KEYS__SCHEDULER_DOCS__GET)
+  @CouchDBDecorators.endpoint('/_scheduler/docs/:db:', query_keys=__ALLOWED_KEYS__SCHEDULER_DOCS__GET)
   def get_replicator_docs(self, couch_data):
     """
     Replication documents for a specific replicator database
@@ -158,7 +158,7 @@ class Server():
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_uuids', filter_format=__ALLOWED_KEYS__UUIDS__GET)
+  @CouchDBDecorators.endpoint('/_uuids', query_keys=__ALLOWED_KEYS__UUIDS__GET)
   def generate_uuids(self, couch_data):
     """
     Retrieves new UUIDS from the CouchDB server

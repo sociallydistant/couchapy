@@ -93,9 +93,13 @@ class CouchDBDecorators():
 
   def endpoint(*args, **kwargs):
     endpoint = args[0]
-    filter_format = kwargs.get('filter_format', None)
+
+    allowed_query_parameter_keys = kwargs.get('query_keys', None)
+    allowed_data_keys = kwargs.get('data_keys', None)
+
     request_method = kwargs.get('method', 'get')
     request_action = getattr(requests, request_method)
+
     def set_endpoint(*eargs):
       fn = eargs[0]
 
@@ -103,19 +107,26 @@ class CouchDBDecorators():
       def wrapper(self, *query_params, **kwargs):
         dynamic_segments = getattr(self, '_predefined_segments', {})
         dynamic_segments.update(kwargs.get('uri_segments', {}))
-
-        #print(dynamic_segments)
-
         cookies = {'AuthSession': self.session.auth_token or None}
         uri = CouchDBDecorators._build_uri(endpoint, dynamic_segments)
 
-        if ('filter' in kwargs):
-          CouchDBDecorators._process_filter_format(filter_format, kwargs.get('filter'))
+        if ('data' in kwargs):
+          CouchDBDecorators._process_filter_format(allowed_data_keys, kwargs.get('data'))
+
+        if ('params' in kwargs):
+          CouchDBDecorators._process_filter_format(allowed_query_parameter_keys, kwargs.get('params'))
 
         if (request_method == 'post'):
-          response = request_action(f'{self.session.address}{uri}', headers=self.session._headers, cookies=cookies, json=kwargs.get('filter'))
+          response = request_action(f'{self.session.address}{uri}',
+                                    headers=self.session._headers,
+                                    cookies=cookies,
+                                    params=kwargs.get('params', None),
+                                    json=kwargs.get('data'))
         else:
-          response = request_action(f'{self.session.address}{uri}', headers=self.session._headers, cookies=cookies, params=kwargs.get('filter'))
+          response = request_action(f'{self.session.address}{uri}',
+                                    headers=self.session._headers,
+                                    cookies=cookies,
+                                    params=kwargs.get('params', None))
 
         if (response.status_code == requests.codes['ok']):
           self.session.set_auth_token_from_headers(response.headers)

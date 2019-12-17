@@ -76,7 +76,7 @@ class Session():
     if ('Set-Cookie' in headers):
       self.auth_token = headers.get('Set-Cookie').split(';', 2)[0].split('=')[1]
 
-  @CouchDBDecorators.endpoint('/_session', method='post', filter_format={'name': str, 'password': str})
+  @CouchDBDecorators.endpoint('/_session', method='post', data_keys={'name': str, 'password': str})
   def authenticate(self, doc):
     return doc
 

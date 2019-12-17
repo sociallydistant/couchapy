@@ -33,7 +33,7 @@ class Database():
   # different cases for different endpoints.  Good solution is to allow a pre and post
   # handler to be supplied into the function?
   # i.e.  CouchDB.db.get(db=mydb, prefetch=do_this_before_request, post_fetch=do_this_after_response)
-  @CouchDBDecorators.endpoint('/:db:', method='put', filter_format=__ALLOWED_KEYS__DB__PUT)
+  @CouchDBDecorators.endpoint('/:db:', method='put', query_keys=__ALLOWED_KEYS__DB__PUT)
   def create(self, couch_data):
     return couch_data
 
@@ -41,8 +41,7 @@ class Database():
   def delete(self, couch_data):
     return couch_data
 
-  # TODO: separate query parameter filter from post filter
-  @CouchDBDecorators.endpoint('/:db:', method='post')#, filter_format=__ALLOWED_KEYS__DB__POST)
+  @CouchDBDecorators.endpoint('/:db:', method='post', query_keys=__ALLOWED_KEYS__DB__POST)
   def save(self, couch_data):
     """
     Saves a document to the specified database
@@ -63,49 +62,50 @@ class Database():
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/:db:/_all_docs', filter_format=CouchDBDecorators.ALLOWED_KEYS__VIEW__GET)
+  @CouchDBDecorators.endpoint('/:db:/_all_docs', query_keys=CouchDBDecorators.ALLOWED_KEYS__VIEW__GET)
   def get_docs(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/:db:/_all_docs', method='post', filter_format=CouchDBDecorators.ALLOWED_KEYS__DB__ALL_DOCS__POST)
+  @CouchDBDecorators.endpoint('/:db:/_all_docs', method='post', data_keys=CouchDBDecorators.ALLOWED_KEYS__DB__ALL_DOCS__POST)
   def get_docs_by_key(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/:db:/_design_docs', filter_format=CouchDBDecorators.ALLOWED_KEYS__VIEW__GET)
+  @CouchDBDecorators.endpoint('/:db:/_design_docs', query_keys=CouchDBDecorators.ALLOWED_KEYS__VIEW__GET)
   def get_design_docs(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/:db:/_design_docs', method='post', filter_format=CouchDBDecorators.ALLOWED_KEYS__DB__DESIGN_DOCS__POST)
+  @CouchDBDecorators.endpoint('/:db:/_design_docs', method='post', data_keys=CouchDBDecorators.ALLOWED_KEYS__DB__DESIGN_DOCS__POST)
   def get_design_docs_by_key(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/:db:/_all_docs/queries', method='post', filter_format=CouchDBDecorators.ALLOWED_KEYS__DB__ALL_DOCS_QUERIES__POST)
+  @CouchDBDecorators.endpoint('/:db:/_all_docs/queries', method='post', data_keys=CouchDBDecorators.ALLOWED_KEYS__DB__ALL_DOCS_QUERIES__POST)
   def get_docs_by_query(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/:db:/_design_docs/queries', method='post', filter_format=CouchDBDecorators.ALLOWED_KEYS__DB__DESIGN_DOCS_QUERIES__POST)
+  @CouchDBDecorators.endpoint('/:db:/_design_docs/queries', method='post', data_keys=CouchDBDecorators.ALLOWED_KEYS__DB__DESIGN_DOCS_QUERIES__POST)
   def get_design_docs_by_query(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/:db:/_local_docs/queries', method='post', filter_format=CouchDBDecorators.ALLOWED_KEYS__DB__LOCAL_DOCS_QUERIES__POST)
+  @CouchDBDecorators.endpoint('/:db:/_local_docs/queries', method='post', data_keys=CouchDBDecorators.ALLOWED_KEYS__DB__LOCAL_DOCS_QUERIES__POST)
   def get_local_docs_by_query(self, couch_data):
     return couch_data
 
-  # TODO: need both query params and post data keys here
-  @CouchDBDecorators.endpoint('/:db:/_bulk_get', method='post', filter_format=CouchDBDecorators.ALLOWED_KEYS__PARAMS__DB__BULK_GET__POST)
+  @CouchDBDecorators.endpoint('/:db:/_bulk_get', method='post',
+                              data_keys=CouchDBDecorators.ALLOWED_KEYS__DATA__DB__BULK_GET__POST,
+                              query_keys=CouchDBDecorators.ALLOWED_KEYS__PARAMS__DB__BULK_GET__POST)
   def bulk_get(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/:db:/_bulk_docs', method='post', filter_format=CouchDBDecorators.ALLOWED_KEYS__DATA__DB__BULK_DOCS__POST)
+  @CouchDBDecorators.endpoint('/:db:/_bulk_docs', method='post', data_keys=CouchDBDecorators.ALLOWED_KEYS__DATA__DB__BULK_DOCS__POST)
   def bulk_save(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/:db:/_find', method='post', filter_format=CouchDBDecorators.ALLOWED_KEYS__DATA__DB__FIND__POST)
+  @CouchDBDecorators.endpoint('/:db:/_find', method='post', data_keys=CouchDBDecorators.ALLOWED_KEYS__DATA__DB__FIND__POST)
   def find(self, couch_data):
     return couch_data
 
   # TODO: need both query params and post data keys here
-  @CouchDBDecorators.endpoint('/:db:/_index', method='post', filter_format=CouchDBDecorators.ALLOWED_KEYS__DATA__DB__FIND__POST)
+  @CouchDBDecorators.endpoint('/:db:/_index', method='post', query_keys=CouchDBDecorators.ALLOWED_KEYS__DATA__DB__INDEX__POST)
   def save_index(self, couch_data):
     return couch_data
 
