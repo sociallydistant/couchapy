@@ -1,7 +1,7 @@
 import pytest
 from pytest_httpserver import HTTPServer
 
-from relaxed import CouchDB, CouchError
+from relaxed import CouchDB, CouchError, InvalidKeysException
 from relaxed.server import Server
 
 
@@ -84,3 +84,27 @@ def test_get_active_tasks(httpserver: HTTPServer):
   response = couch.server.get_active_tasks()
   assert isinstance(response, CouchError) is True
   assert response.status_code == 401
+
+
+def test_get_all_dbs_without_params(httpserver: HTTPServer):
+  expected_json = ["_users", "contacts", "docs", "invoices", "locations"]
+
+  httpserver.expect_oneshot_request("/_all_dbs",  method="GET").respond_with_json(expected_json)
+  response = couch.server.get_database_names()
+  assert response == expected_json
+
+
+def test_get_all_dbs_with_valid_params(httpserver: HTTPServer):
+  expected_json = ["_users", "contacts", "docs", "invoices", "locations"]
+
+  httpserver.expect_oneshot_request("/_all_dbs",  method="GET").respond_with_json(expected_json)
+  response = couch.server.get_database_names(params={'descending': True, 'endkey': ['ackack']})
+  assert isinstance(response, CouchError) is False
+
+def test_get_all_dbs_with_invalid_params(httpserver: HTTPServer):
+  expected_json = ["_users", "contacts", "docs", "invoices", "locations"]
+
+  httpserver.expect_oneshot_request("/_all_dbs",  method="GET").respond_with_json(expected_json)
+
+  with pytest.raises(InvalidKeysException):
+    couch.server.get_database_names(params={'nonexisting_key': ''})
