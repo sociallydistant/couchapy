@@ -3,6 +3,7 @@ from functools import wraps
 import requests
 from re import sub
 
+
 class CouchDB():
     """
     Exposes an interface for interating with a CouchDB server's REST API.
@@ -24,11 +25,18 @@ class CouchDB():
     def __exit__(self, type, value, traceback):
       self._context_manager = False
 
+
 class CouchError():
   def __init__(self, **kwargs):
     self.error = kwargs.get('error', None)
     self.reason = kwargs.get('reason', None)
     self.status_code = kwargs.get('code', None)
+
+
+class InvalidKeysException(Exception):
+  """The passed data contains keys that are not allowed"""
+  pass
+
 
 class CouchDBDecorators():
   ALLOWED_KEYS__VIEW__GET = {'conflicts': bool, 'descending': bool,
@@ -60,7 +68,7 @@ class CouchDBDecorators():
     if (filter_format is not None):
       for key in filter.keys():
         if key not in filter_format:
-          raise Exception("The provided filter does not meet the expected format.")
+          raise InvalidKeysException("The provided filter does not meet the expected format.")
 
   def _build_uri(template: str, segments: dict):
     def replace_with_segment(matches):
