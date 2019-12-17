@@ -58,11 +58,14 @@ class CouchDBDecorators():
   ALLOWED_KEYS__DB__LOCAL_DOCS_QUERIES__POST = {'queries': []}
   ALLOWED_KEYS__PARAMS__DB__BULK_GET__POST = {'revs': bool}
   ALLOWED_KEYS__DATA__DB__BULK_GET__POST = {'docs': [{}]}
+  ALLOWED_KEYS__PARAMS__DB__BULK_GET__POST = {'revs': bool}
   ALLOWED_KEYS__DATA__DB__BULK_DOCS__POST = {'docs': [{}], 'new_edits': bool }
   ALLOWED_KEYS__DATA__DB__FIND__POST = {'selector': {}, 'limit': int, 'skip': int,
                                         'sort': {}, 'fields': [], 'use_index': [], 'r': int,
                                         'bookmark': str, 'update': bool,
                                         'stable': bool, 'stale': str, 'execution_stats': bool}
+  ALLOWED_KEYS__DATA__DB__INDEX__POST = {'index': {}, 'ddoc': str, 'name': str,
+                                        'type': str, 'partial_filter_selector': {}}
 
   def _process_filter_format(filter_format, filter):
     if (filter_format is not None):
