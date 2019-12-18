@@ -4,12 +4,7 @@ from .core import RelaxedDecorators, CouchError, AllowedKeys
 class Server():
   def __init__(self, **kwargs):
     self.session = kwargs.get('session', None)
-
     self._predefined_segments = {'node_name': '_local'}
-
-  def _set_simple_attribute_as_list(self, attribute, value):
-    setattr(self, attribute, () if isinstance(value, CouchError) else value)
-    return getattr(self, attribute)
 
   @RelaxedDecorators.endpoint('/')
   def get_info(self, couch_data):
