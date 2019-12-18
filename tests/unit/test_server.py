@@ -143,6 +143,18 @@ def test_get_cluster_setup_with_params(httpserver: HTTPServer):
     couch.server.get_cluster_setup(params={'nonexisting_key': ''})
 
 
+def test_configure_cluster_setup(httpserver: HTTPServer):
+  expected_json = {"state": "cluster_enabled"}
+  httpserver.expect_request("/_cluster_setup",  method="POST").respond_with_json(expected_json)
+
+  for k in AllowedKeys.SERVER__CLUSTER_SETUP__DATA:
+    response = couch.server.configure_cluster_setup(data={k: ['test']})
+    assert isinstance(response, CouchError) is False
+
+  with pytest.raises(InvalidKeysException):
+    couch.server.configure_cluster_setup(data={'nonexisting_key': ''})
+
+
 def test_get_database_updates(httpserver: HTTPServer):
   expected_json = {
     "results": [
@@ -321,7 +333,7 @@ def test_get_replication_docs(httpserver: HTTPServer):
     ],
     "offset": 0,
     "total_rows": 1
-}
+  }
 
   httpserver.expect_oneshot_request("/_scheduler/docs",  method="GET").respond_with_json(expected_json)
   response = couch.server.get_replication_docs()
@@ -405,3 +417,224 @@ def test_get_replicator_doc(httpserver: HTTPServer):
     httpserver.expect_oneshot_request("/_scheduler/docs/other/_replicator/replication-doc-id",  method="GET").respond_with_json({}, status=code)
     response = couch.server.get_replicator_doc(uri_segments={'db': 'other', 'docid': 'replication-doc-id'})
     assert isinstance(response, CouchError) is True
+
+
+def test_get_node_server_stats(httpserver: HTTPServer):
+  expected_json = {
+    "value": {
+      "min": 0,
+      "max": 0,
+      "arithmetic_mean": 0,
+      "geometric_mean": 0,
+      "harmonic_mean": 0,
+      "median": 0,
+      "variance": 0,
+      "standard_deviation": 0,
+      "skewness": 0,
+      "kurtosis": 0,
+      "percentile": [[50, 0], [75, 0], [90, 0], [95, 0], [99, 0], [999, 0]],
+      "histogram": [[0, 0]],
+      "n": 0
+    },
+    "type": "histogram",
+    "desc": "length of a request inside CouchDB without MochiWeb"
+  }
+
+  httpserver.expect_request("/_node/_local/_stats",  method="GET").respond_with_json(expected_json)
+  response = couch.server.get_node_server_stats(uri_segments={'node_name': '_local'})
+  assert response == expected_json
+
+  response = couch.server.get_node_server_stats()
+  assert response == expected_json
+
+
+def test_get_node_server_stat(httpserver: HTTPServer):
+  expected_json = {
+    "value": {
+      "min": 0,
+      "max": 0,
+      "arithmetic_mean": 0,
+      "geometric_mean": 0,
+      "harmonic_mean": 0,
+      "median": 0,
+      "variance": 0,
+      "standard_deviation": 0,
+      "skewness": 0,
+      "kurtosis": 0,
+      "percentile": [[50, 0], [75, 0], [90, 0], [95, 0], [99, 0], [999, 0]],
+      "histogram": [[0, 0]],
+      "n": 0
+    },
+    "type": "histogram",
+    "desc": "length of a request inside CouchDB without MochiWeb"
+  }
+
+  httpserver.expect_request("/_node/_local/_stats/couchdb/request_time",  method="GET").respond_with_json(expected_json)
+  response = couch.server.get_node_server_stat(uri_segments={'node_name': '_local', 'stat': 'couchdb/request_time'})
+  assert response == expected_json
+
+  response = couch.server.get_node_server_stat()
+  assert response == expected_json
+
+
+def test_get_node_system_stats(httpserver: HTTPServer):
+  expected_json = {"uptime": 259, "memory": 1000}
+
+  httpserver.expect_request("/_node/_local/_system",  method="GET").respond_with_json(expected_json)
+  response = couch.server.get_node_system_stats(uri_segments={'node_name': '_local'})
+  assert response == expected_json
+
+  response = couch.server.get_node_system_stats()
+  assert response == expected_json
+
+
+def test_restart_node(httpserver: HTTPServer):
+  expected_json = {}
+
+  httpserver.expect_request("/_node/_local/_restart",  method="POST").respond_with_json(expected_json)
+  response = couch.server.restart_node(uri_segments={'node_name': '_local'})
+  assert isinstance(response, CouchError) is False
+
+
+def test_get_server_config(httpserver: HTTPServer):
+  expected_json = {
+    "attachments": {
+        "compressible_types": "text/*, application/javascript, application/json,  application/xml",
+        "compression_level": "8"
+    },
+    "couchdb": {
+      "users_db_suffix": "_users",
+      "database_dir": "/var/lib/couchdb",
+      "delayed_commits": "true",
+      "max_attachment_chunk_size": "4294967296",
+      "max_dbs_open": "100",
+      "os_process_timeout": "5000",
+      "uri_file": "/var/lib/couchdb/couch.uri",
+      "util_driver_dir": "/usr/lib64/couchdb/erlang/lib/couch-1.5.0/priv/lib",
+      "view_index_dir": "/var/lib/couchdb"
+    },
+    "chttpd": {
+      "backlog": "512",
+      "bind_address": "0.0.0.0",
+      "docroot": "./share/www",
+      "port": "5984",
+      "require_valid_user": "false",
+      "socket_options": "[{sndbuf, 262144}, {nodelay, true}]",
+      "server_options": "[{recbuf, undefined}]"
+    },
+    "httpd": {
+      "allow_jsonp": "false",
+      "authentication_handlers": "{couch_httpd_auth, cookie_authentication_handler}, {couch_httpd_auth, default_authentication_handler}",
+      "bind_address": "192.168.0.2",
+      "max_connections": "2048",
+      "port": "5984",
+      "secure_rewrites": "true"
+    },
+    "log": {"writer": "file", "file": "/var/log/couchdb/couch.log", "include_sasl": "true", "level": "info"},
+    "query_server_config": {"reduce_limit": "true"},
+    "replicator": {"max_http_pipeline_size": "10", "max_http_sessions": "10"},
+    "stats": {"rate": "1000", "samples": "[0, 60, 300, 900]"},
+    "uuids": {"algorithm": "utc_random"}
+  }
+
+  httpserver.expect_oneshot_request("/_node/_local/_config",  method="GET").respond_with_json(expected_json)
+  response = couch.server.get_server_config(uri_segments={'node_name': '_local'})
+  assert response == expected_json
+
+  for code in [401]:
+    httpserver.expect_oneshot_request("/_node/_local/_config",  method="GET").respond_with_json({}, status=code)
+    response = couch.server.get_server_config(uri_segments={'node_name': '_local'})
+    assert isinstance(response, CouchError) is True
+
+
+def test_get_config(httpserver: HTTPServer):
+  expected_json = {
+    "httpd": {
+      "allow_jsonp": "false",
+      "authentication_handlers": "{couch_httpd_auth, cookie_authentication_handler}, {couch_httpd_auth, default_authentication_handler}",
+      "bind_address": "192.168.0.2",
+      "max_connections": "2048",
+      "port": "5984",
+      "secure_rewrites": "true"
+    }
+  }
+
+  httpserver.expect_oneshot_request("/_node/_local/_config/httpd",  method="GET").respond_with_json(expected_json)
+  response = couch.server.get_config(uri_segments={'node_name': '_local', 'key': 'httpd'})
+  assert response == expected_json
+
+  for code in [401]:
+    httpserver.expect_oneshot_request("/_node/_local/_config/httpd",  method="GET").respond_with_json({}, status=code)
+    response = couch.server.get_config(uri_segments={'node_name': '_local', 'key': 'httpd'})
+    assert isinstance(response, CouchError) is True
+
+
+def test_set_config(httpserver: HTTPServer):
+  expected_json = {'data': "5984"}
+
+  httpserver.expect_oneshot_request("/_node/_local/_config/httpd/port",  method="PUT").respond_with_json(expected_json)
+  response = couch.server.set_config(uri_segments={'node_name': '_local', 'key': 'httpd/port'}, data="5984")
+  assert response == expected_json
+
+  for code in [400, 401, 500]:
+    httpserver.expect_oneshot_request("/_node/_local/_config/httpd/port",  method="PUT").respond_with_json(expected_json, status=code)
+    response = couch.server.set_config(uri_segments={'node_name': '_local', 'key': 'httpd/port'}, data="5984")
+    assert isinstance(response, CouchError) is True
+
+def test_delete_config(httpserver: HTTPServer):
+  expected_json = {'data': "5984"}
+
+  httpserver.expect_oneshot_request("/_node/_local/_config/httpd/port",  method="DELETE").respond_with_json(expected_json)
+  response = couch.server.delete_config(uri_segments={'node_name': '_local', 'key': 'httpd/port'})
+  assert response == expected_json
+
+  for code in [400, 401]:
+    httpserver.expect_oneshot_request("/_node/_local/_config/httpd/port",  method="DELETE").respond_with_json(expected_json, status=code)
+    response = couch.server.delete_config(uri_segments={'node_name': '_local', 'key': 'httpd/port'})
+    assert isinstance(response, CouchError) is True
+
+def test_generate_uiids(httpserver: HTTPServer):
+  expected_json = {
+      "uuids": [
+          "75480ca477454894678e22eec6002413",
+          "75480ca477454894678e22eec600250b",
+          "75480ca477454894678e22eec6002c41",
+          "75480ca477454894678e22eec6003b90",
+          "75480ca477454894678e22eec6003fca",
+          "75480ca477454894678e22eec6004bef",
+          "75480ca477454894678e22eec600528f",
+          "75480ca477454894678e22eec6005e0b",
+          "75480ca477454894678e22eec6006158",
+          "75480ca477454894678e22eec6006161"
+      ]
+  }
+
+  httpserver.expect_oneshot_request("/_uuids",  method="GET").respond_with_json(expected_json)
+  response = couch.server.generate_uuids()
+  assert response == expected_json['uuids']
+
+  expected_json = {"uuids": ["75480ca477454894678e22eec6002413"]}
+  httpserver.expect_oneshot_request("/_uuids",  method="GET").respond_with_json(expected_json)
+  response = couch.server.generate_uuids()
+  assert response == expected_json['uuids'][0]
+
+  for code in [400]:
+    httpserver.expect_oneshot_request("/_uuids",  method="GET").respond_with_json(expected_json, status=code)
+    response = couch.server.generate_uuids()
+    assert isinstance(response, CouchError) is True
+
+  httpserver.expect_request("/_uuids",  method="GET").respond_with_json(expected_json)
+  for k in AllowedKeys.SERVER__UUIDS__PARAMS:
+    response = couch.server.generate_uuids(params={k: ['test']})
+    assert isinstance(response, CouchError) is False
+
+  with pytest.raises(InvalidKeysException):
+    couch.server.generate_uuids(params={'nonexisting_key': ''})
+
+
+def test_get_uptime(httpserver: HTTPServer):
+  expected_json = {"uptime": 259, "memory": 1000}
+
+  httpserver.expect_request("/_node/_local/_system",  method="GET").respond_with_json(expected_json)
+  response = couch.server.get_uptime(uri_segments={'node_name': '_local'})
+  assert response == expected_json['uptime']
