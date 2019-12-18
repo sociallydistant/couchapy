@@ -149,7 +149,7 @@ class RelaxedDecorators():
                                     cookies=cookies,
                                     params=kwargs.get('params', None))
 
-        if (response.status_code == requests.codes['ok']):
+        if (response.status_code in [requests.codes['ok'], requests.codes['created'], requests.codes['accepted']]):
           self.session.set_auth_token_from_headers(response.headers)
           ret_val = response.json()
         else:
