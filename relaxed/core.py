@@ -152,8 +152,12 @@ class RelaxedDecorators():
         if (response.status_code in [requests.codes['ok'], requests.codes['created'], requests.codes['accepted']]):
           self.session.set_auth_token_from_headers(response.headers)
           ret_val = response.json()
+          if isinstance(ret_val, str):
+            ret_val = {'data': ret_val}
         else:
           result = response.json()
+          if isinstance(result, str):
+            result = {'data': result}
           result['code'] = response.status_code
           ret_val = CouchError(**result)
 
