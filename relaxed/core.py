@@ -16,7 +16,7 @@ class CouchDB():
       self._context_manager = False
       self.session = Session(**kwargs)
       self.server = Server(session=self.session)
-      self.db = Database(session=self.session)
+      self.db = Database(session=self.session, **kwargs)
 
     def __enter__(self):
       self._context_manager = True
@@ -37,36 +37,57 @@ class InvalidKeysException(Exception):
   """The passed data contains keys that are not allowed"""
   pass
 
+class AllowedKeys():
+  SERVER__ALL_DBS__PARAMS = {'descending': bool, 'limit': int, 'skip': int,
+                             'startkey': [], 'start_key': [], 'endkey': [], 'end_key': []}
+  SERVER__DBS_INFO__PARAMS = {'keys': []}
+  SERVER__CLUSTER_SETUP__PARAMS = {'ensure_dbs_exist': []}
+  SERVER__CLUSTER_SETUP__DATA = {'action': str, 'bind_address': str,
+                                         'host': str, 'port': int,
+                                         'node_code': int, 'remote_node': str,
+                                         'username': str, 'password': str,
+                                         'remote_current_user': str, 'remote_current_password': str,
+                                         'ensure_dbs_exist': [], }
+  SERVER__DB_UPDATES__PARAMS = {'feed': str, 'timeout': int, 'heartbeat': int, 'since': str}
+  SERVER__REPLICATE__DATA = {'cancel': bool, 'continuous': bool,
+                                     'create_target': bool, 'doc_ids': [],
+                                     'filter': str, 'proxy': str,
+                                     'source': {}, 'target': {}}
+  SERVER__SCHEDULER_JOBS__PARAMS = {'limit': int, 'skip': int}
+  SERVER__SCHEDULER_DOCS__PARAMS = {'limit': int, 'skip': int}
+  SERVER__UUIDS__PARAMS = {'count': int}
 
-class CouchDBDecorators():
-  ALLOWED_KEYS__VIEW__GET = {'conflicts': bool, 'descending': bool,
-                             'startkey': [], 'start_key': [],
-                             'startkey_docid': str, 'start_key_doc_id': str,
-                             'endkey': [], 'end_key': [],
-                             'endkey_docid': str, 'end_key_doc_id': str,
-                             'group': bool, 'group_level': int,
-                             'include_docs': bool, 'attachments': bool, 'att_encoding_info': bool, 'inclusive_end': bool,
-                             'key': [], 'keys': [[]],
-                             'limit': int, 'skip': int, 'reduce': bool, 'sorted': bool,
-                             'stable': bool, 'stale': str,
-                             'update': str, 'update_seq': bool}
+  DATABASE__DB__CREATE_PARAMS = {'q': int, 'n': int}
+  DATABASE__DB__SAVE__PARAMS = {'batch': str}
 
-  ALLOWED_KEYS__DB__ALL_DOCS__POST = {'keys': []}
-  ALLOWED_KEYS__DB__ALL_DOCS_QUERIES__POST = {'queries': []}
-  ALLOWED_KEYS__DB__DESIGN_DOCS_QUERIES__POST = {'queries': []}
-  ALLOWED_KEYS__DB__DESIGN_DOCS__POST = {'keys': []}
-  ALLOWED_KEYS__DB__LOCAL_DOCS_QUERIES__POST = {'queries': []}
-  ALLOWED_KEYS__PARAMS__DB__BULK_GET__POST = {'revs': bool}
-  ALLOWED_KEYS__DATA__DB__BULK_GET__POST = {'docs': [{}]}
-  ALLOWED_KEYS__PARAMS__DB__BULK_GET__POST = {'revs': bool}
-  ALLOWED_KEYS__DATA__DB__BULK_DOCS__POST = {'docs': [{}], 'new_edits': bool }
-  ALLOWED_KEYS__DATA__DB__FIND__POST = {'selector': {}, 'limit': int, 'skip': int,
-                                        'sort': {}, 'fields': [], 'use_index': [], 'r': int,
-                                        'bookmark': str, 'update': bool,
-                                        'stable': bool, 'stale': str, 'execution_stats': bool}
-  ALLOWED_KEYS__DATA__DB__INDEX__POST = {'index': {}, 'ddoc': str, 'name': str,
+  VIEW__PARAMS = {'conflicts': bool, 'descending': bool,
+                  'startkey': [], 'start_key': [],
+                  'startkey_docid': str, 'start_key_doc_id': str,
+                  'endkey': [], 'end_key': [],
+                  'endkey_docid': str, 'end_key_doc_id': str,
+                  'group': bool, 'group_level': int,
+                  'attachments': bool, 'att_encoding_info': bool,
+                  'include_docs': bool, 'inclusive_end': bool,
+                  'key': [], 'keys': [[]],
+                  'limit': int, 'skip': int, 'reduce': bool, 'sorted': bool,
+                  'stable': bool, 'stale': str,
+                  'update': str, 'update_seq': bool}
+  DATABASE__ALL_DOCS__DATA = {'keys': []}
+  DATABASE__ALL_DOCS_QUERIES__DATA = {'queries': []}
+  DATABASE__DESIGN_DOCS_QUERIES__DATA = {'queries': []}
+  DATABASE__DESIGN_DOCS__DATA = {'keys': []}
+  DATABASE__LOCAL_DOCS_QUERIES__DATA = {'queries': []}
+  DATABASE__BULK_GET__PARAMS = {'revs': bool}
+  DATABASE__BULK_GET__DATA = {'docs': [{}]}
+  DATABASE__BULK_DOCS__DATA = {'docs': [{}], 'new_edits': bool }
+  DATABASE__FIND__DATA = {'selector': {}, 'limit': int, 'skip': int,
+                          'sort': {}, 'fields': [], 'use_index': [], 'r': int,
+                          'bookmark': str, 'update': bool,
+                          'stable': bool, 'stale': str, 'execution_stats': bool}
+  DATABASE__INDEX__DATA = {'index': {}, 'ddoc': str, 'name': str,
                                         'type': str, 'partial_filter_selector': {}}
 
+class RelaxedDecorators():
   def _process_filter_format(filter_format, filter):
     if (filter_format is not None):
       for key in filter.keys():
@@ -108,13 +129,13 @@ class CouchDBDecorators():
         dynamic_segments = getattr(self, '_predefined_segments', {})
         dynamic_segments.update(kwargs.get('uri_segments', {}))
         cookies = {'AuthSession': self.session.auth_token or None}
-        uri = CouchDBDecorators._build_uri(endpoint, dynamic_segments)
+        uri = RelaxedDecorators._build_uri(endpoint, dynamic_segments)
 
         if ('data' in kwargs):
-          CouchDBDecorators._process_filter_format(allowed_data_keys, kwargs.get('data'))
+          RelaxedDecorators._process_filter_format(allowed_data_keys, kwargs.get('data'))
 
         if ('params' in kwargs):
-          CouchDBDecorators._process_filter_format(allowed_query_parameter_keys, kwargs.get('params'))
+          RelaxedDecorators._process_filter_format(allowed_query_parameter_keys, kwargs.get('params'))
 
         if (request_method == 'post'):
           response = request_action(f'{self.session.address}{uri}',

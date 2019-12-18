@@ -3,7 +3,7 @@ import requests
 from timeloop import Timeloop
 from datetime import timedelta
 
-from .core import CouchDBDecorators, CouchError
+from .core import RelaxedDecorators, CouchError
 
 # TODO: Refactor to extend requests.Session and not dict
 
@@ -62,7 +62,7 @@ class Session():
 
     # TODO: implement a generic Error class to hold error information that consumer can check
     if (self._auto_connect is True and self._basic_auth is False):
-      self.authenticate(filter={'name': self._name, 'password': self._password})
+      self.authenticate(data={'name': self._name, 'password': self._password})
 
   def __del__(self):
     if (self._keep_alive > 0):
@@ -76,15 +76,15 @@ class Session():
     if ('Set-Cookie' in headers):
       self.auth_token = headers.get('Set-Cookie').split(';', 2)[0].split('=')[1]
 
-  @CouchDBDecorators.endpoint('/_session', method='post', data_keys={'name': str, 'password': str})
+  @RelaxedDecorators.endpoint('/_session', method='post', data_keys={'name': str, 'password': str})
   def authenticate(self, doc):
     return doc
 
-  @CouchDBDecorators.endpoint('/_session')
+  @RelaxedDecorators.endpoint('/_session')
   def get_session_info(self, doc):
     return doc
 
-  @CouchDBDecorators.endpoint('/_session', method='delete')
+  @RelaxedDecorators.endpoint('/_session', method='delete')
   def close(self, doc):
     return doc if isinstance(doc, CouchError) else None
 

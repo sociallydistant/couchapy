@@ -1,29 +1,7 @@
-from .core import CouchDBDecorators, CouchError
+from .core import RelaxedDecorators, CouchError, AllowedKeys
 
 
 class Server():
-  __ALLOWED_KEYS__ALL_DBS__GET = {'descending': bool, 'limit': int, 'skip': int,
-                                  'startkey': [], 'start_key': [], 'endkey': [], 'end_key': []}
-  __ALLOWED_KEYS__DBS_INFO__POST = {'keys': []}
-  __ALLOWED_KEYS__CLUSTER_SETUP__GET = {'ensure_dbs_exist': []}
-  __ALLOWED_KEYS__CLUSTER_SETUP__POST = {'action': str, 'bind_address': str,
-                                         'host': str, 'port': int,
-                                         'node_code': int, 'remote_node': str,
-                                         'username': str, 'password': str,
-                                         'remote_current_user': str, 'remote_current_password': str,
-                                         'ensure_dbs_exist': [], }
-
-  __ALLOWED_KEYS__DB_UPDATES__GET = {'feed': str, 'timeout': int, 'heartbeat': int, 'since': str}
-
-  __ALLOWED_KEYS__REPLICATE__POST = {'cancel': bool, 'continuous': bool,
-                                     'create_target': bool, 'doc_ids': [],
-                                     'filter': str, 'proxy': str,
-                                     'source': {}, 'target': {}}
-
-  __ALLOWED_KEYS__SCHEDULER_JOBS__GET = {'limit': int, 'skip': int}
-  __ALLOWED_KEYS__SCHEDULER_DOCS__GET = {'limit': int, 'skip': int}
-  __ALLOWED_KEYS__UUIDS__GET = {'count': int}
-
   def __init__(self, **kwargs):
     self.session = kwargs.get('session', None)
 
@@ -33,110 +11,110 @@ class Server():
     setattr(self, attribute, () if isinstance(value, CouchError) else value)
     return getattr(self, attribute)
 
-  @CouchDBDecorators.endpoint('/')
+  @RelaxedDecorators.endpoint('/')
   def get_info(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_up')
+  @RelaxedDecorators.endpoint('/_up')
   def get_server_status(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_active_tasks')
+  @RelaxedDecorators.endpoint('/_active_tasks')
   def get_active_tasks(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_all_dbs', query_keys=__ALLOWED_KEYS__ALL_DBS__GET)
+  @RelaxedDecorators.endpoint('/_all_dbs', query_keys=AllowedKeys.SERVER__ALL_DBS__PARAMS)
   def get_database_names(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_dbs_info', method='post', data_keys=__ALLOWED_KEYS__DBS_INFO__POST)
+  @RelaxedDecorators.endpoint('/_dbs_info', method='post', data_keys=AllowedKeys.SERVER__DBS_INFO__PARAMS)
   def get_databases(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_cluster_setup', query_keys=__ALLOWED_KEYS__CLUSTER_SETUP__GET)
+  @RelaxedDecorators.endpoint('/_cluster_setup', query_keys=AllowedKeys.SERVER__CLUSTER_SETUP__PARAMS)
   def get_cluster_setup(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_cluster_setup', method='post', data_keys=__ALLOWED_KEYS__CLUSTER_SETUP__POST)
+  @RelaxedDecorators.endpoint('/_cluster_setup', method='post', data_keys=AllowedKeys.SERVER__CLUSTER_SETUP__DATA)
   def configure_cluster_setup(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_db_updates', method='post', query_keys=__ALLOWED_KEYS__DB_UPDATES__GET)
+  @RelaxedDecorators.endpoint('/_db_updates', method='post', query_keys=AllowedKeys.SERVER__DB_UPDATES__PARAMS)
   def get_database_updates(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_membership')
+  @RelaxedDecorators.endpoint('/_membership')
   def get_membership(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_replicate', method='post', data_keys=__ALLOWED_KEYS__REPLICATE__POST)
+  @RelaxedDecorators.endpoint('/_replicate', method='post', data_keys=AllowedKeys.SERVER__REPLICATE__DATA)
   def replicate(self, couch_data):
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_scheduler/jobs', query_keys=__ALLOWED_KEYS__SCHEDULER_JOBS__GET)
+  @RelaxedDecorators.endpoint('/_scheduler/jobs', query_keys=AllowedKeys.SERVER__SCHEDULER_JOBS__PARAMS)
   def get_replication_updates(self, couch_data):
     """
     Retrieves the status of replication jobs that are currently active.
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_scheduler/docs', query_keys=__ALLOWED_KEYS__SCHEDULER_DOCS__GET)
+  @RelaxedDecorators.endpoint('/_scheduler/docs', query_keys=AllowedKeys.SERVER__SCHEDULER_DOCS__PARAMS)
   def get_replication_docs(self, couch_data):
     """
     All Replication documents
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_scheduler/docs/:db:', query_keys=__ALLOWED_KEYS__SCHEDULER_DOCS__GET)
+  @RelaxedDecorators.endpoint('/_scheduler/docs/:db:', query_keys=AllowedKeys.SERVER__SCHEDULER_DOCS__PARAMS)
   def get_replicator_docs(self, couch_data):
     """
     Replication documents for a specific replicator database
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_scheduler/docs/:db:/:docid:')
+  @RelaxedDecorators.endpoint('/_scheduler/docs/:db:/:docid:')
   def get_replicator_doc(self, couch_data):
     """
     Retrives a single replication document for the specified replicator database
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_node/:node_name:/_stats')
+  @RelaxedDecorators.endpoint('/_node/:node_name:/_stats')
   def get_node_server_stats(self, couch_data):
     """
     Get statistics for the running server with name :node_name:
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_node/:node_name:/_stats/:stat:')
+  @RelaxedDecorators.endpoint('/_node/:node_name:/_stats/:stat:')
   def get_node_server_stat(self, couch_data):
     """
     Get a section or subsection of the statistics for the running server with name :node_name:
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_node/:node_name:/_system')
+  @RelaxedDecorators.endpoint('/_node/:node_name:/_system')
   def get_node_system_stats(self, couch_data):
     """
     Get system statistics for the running server with name :node_name:
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_node/:node_name:/_restart', method='post')
+  @RelaxedDecorators.endpoint('/_node/:node_name:/_restart', method='post')
   def restart_node(self, couch_data):
     """
     Restart the specified node
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_node/:node_name:/_config')
+  @RelaxedDecorators.endpoint('/_node/:node_name:/_config')
   def get_server_config(self, couch_data):
     """
     Gets the entire server configuration of the specified node.
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_node/:node_name:/_config/:key:')
+  @RelaxedDecorators.endpoint('/_node/:node_name:/_config/:key:')
   def get_config(self, couch_data):
     """
     Gets the server configuration section or key defined by :key: of the specified node.
@@ -144,21 +122,21 @@ class Server():
     return couch_data
 
   # TODO: implement put in endpoint decorator
-  @CouchDBDecorators.endpoint('/_node/:node_name:/_config/:key:', method='put')
+  @RelaxedDecorators.endpoint('/_node/:node_name:/_config/:key:', method='put')
   def set_config(self, couch_data):
     """
     Create or update the server configuration key defined by :key: of the specified node.
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_node/:node_name:/_config/:key:', method='delete')
+  @RelaxedDecorators.endpoint('/_node/:node_name:/_config/:key:', method='delete')
   def delete_config(self, couch_data):
     """
     Delete the server configuration key defined by :key: of the specified node.
     """
     return couch_data
 
-  @CouchDBDecorators.endpoint('/_uuids', query_keys=__ALLOWED_KEYS__UUIDS__GET)
+  @RelaxedDecorators.endpoint('/_uuids', query_keys=AllowedKeys.SERVER__UUIDS__PARAMS)
   def generate_uuids(self, couch_data):
     """
     Retrieves new UUIDS from the CouchDB server
@@ -173,7 +151,7 @@ class Server():
 
     return couch_data.get('uuids')
 
-  @CouchDBDecorators.endpoint('/_node/:node_name:/_system')
+  @RelaxedDecorators.endpoint('/_node/:node_name:/_system')
   def get_uptime(self, couch_data):
     """
     Get the up time, in seconds, for the specified node.
