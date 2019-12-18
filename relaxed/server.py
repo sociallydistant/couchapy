@@ -65,14 +65,14 @@ class Server():
     """
     return couch_data
 
-  @RelaxedDecorators.endpoint('/_scheduler/docs/:db:', query_keys=AllowedKeys.SERVER__SCHEDULER_DOCS__PARAMS)
+  @RelaxedDecorators.endpoint('/_scheduler/docs/:db:/_replicator', query_keys=AllowedKeys.SERVER__SCHEDULER_DOCS__PARAMS)
   def get_replicator_docs(self, couch_data):
     """
     Replication documents for a specific replicator database
     """
     return couch_data
 
-  @RelaxedDecorators.endpoint('/_scheduler/docs/:db:/:docid:')
+  @RelaxedDecorators.endpoint('/_scheduler/docs/:db:/_replicator/:docid:')
   def get_replicator_doc(self, couch_data):
     """
     Retrives a single replication document for the specified replicator database
