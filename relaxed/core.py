@@ -137,7 +137,7 @@ class RelaxedDecorators():
         if ('params' in kwargs):
           RelaxedDecorators._process_filter_format(allowed_query_parameter_keys, kwargs.get('params'))
 
-        if (request_method == 'post'):
+        if (request_method == 'post'or request_method == 'put'):
           response = request_action(f'{self.session.address}{uri}',
                                     headers=self.session._headers,
                                     cookies=cookies,
