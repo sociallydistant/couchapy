@@ -1,7 +1,7 @@
 import pytest
 from pytest_httpserver import HTTPServer
 
-from relaxed import CouchDB, CouchError, InvalidKeysException
+from relaxed import AllowedKeys, CouchDB, CouchError, InvalidKeysException
 from relaxed.server import Server
 
 
@@ -20,6 +20,9 @@ def setup():
 
 def test_instanced_class_without_args_has_correct_properties(httpserver: HTTPServer):
   server = Server()
+
+
+
   assert server.session is None
   assert server._predefined_segments == {'node_name': '_local'}
 
@@ -86,25 +89,69 @@ def test_get_active_tasks(httpserver: HTTPServer):
   assert response.status_code == 401
 
 
-def test_get_all_dbs_without_params(httpserver: HTTPServer):
+def test_get_database_names_without_params(httpserver: HTTPServer):
   expected_json = ["_users", "contacts", "docs", "invoices", "locations"]
-
   httpserver.expect_oneshot_request("/_all_dbs",  method="GET").respond_with_json(expected_json)
   response = couch.server.get_database_names()
   assert response == expected_json
 
 
-def test_get_all_dbs_with_valid_params(httpserver: HTTPServer):
+def test_get_database_names_with_params(httpserver: HTTPServer):
   expected_json = ["_users", "contacts", "docs", "invoices", "locations"]
+  httpserver.expect_request("/_all_dbs",  method="GET").respond_with_json(expected_json)
 
-  httpserver.expect_oneshot_request("/_all_dbs",  method="GET").respond_with_json(expected_json)
-  response = couch.server.get_database_names(params={'descending': True, 'endkey': ['ackack']})
-  assert isinstance(response, CouchError) is False
-
-def test_get_all_dbs_with_invalid_params(httpserver: HTTPServer):
-  expected_json = ["_users", "contacts", "docs", "invoices", "locations"]
-
-  httpserver.expect_oneshot_request("/_all_dbs",  method="GET").respond_with_json(expected_json)
+  for k in AllowedKeys.SERVER__ALL_DBS__PARAMS:
+    response = couch.server.get_database_names(params={k: ''})
+    assert isinstance(response, CouchError) is False
 
   with pytest.raises(InvalidKeysException):
     couch.server.get_database_names(params={'nonexisting_key': ''})
+
+
+def test_get_databases_without_params(httpserver: HTTPServer):
+  expected_json = []
+  httpserver.expect_oneshot_request("/_dbs_info",  method="POST").respond_with_json(expected_json)
+  response = couch.server.get_databases()
+  assert response == expected_json
+
+
+def test_get_databases_with_params(httpserver: HTTPServer):
+  expected_json = ["_users", "contacts", "docs", "invoices", "locations"]
+  httpserver.expect_request("/_dbs_info",  method="POST").respond_with_json(expected_json)
+
+  for k in AllowedKeys.SERVER__DBS_INFO__PARAMS:
+    response = couch.server.get_databases(data={k: ['test']})
+    assert isinstance(response, CouchError) is False
+
+  with pytest.raises(InvalidKeysException):
+    couch.server.get_databases(data={'nonexisting_key': ''})
+
+
+def test_get_databases_with_400_response_from_couch(httpserver: HTTPServer):
+  httpserver.expect_request("/_dbs_info",  method="POST").respond_with_json({}, status=400)
+  response = couch.server.get_databases(data={'keys': []})
+  assert isinstance(response, CouchError) is True
+  assert response.status_code == 400
+
+
+def test_get_cluster_setup_with_params(httpserver: HTTPServer):
+  expected_json = {"state": "cluster_enabled"}
+  httpserver.expect_request("/_cluster_setup",  method="GET").respond_with_json(expected_json)
+
+  for k in AllowedKeys.SERVER__CLUSTER_SETUP__PARAMS:
+    response = couch.server.get_cluster_setup(query={k: ['test']})
+    assert isinstance(response, CouchError) is False
+
+  with pytest.raises(InvalidKeysException):
+    couch.server.get_cluster_setup(params={'nonexisting_key': ''})
+
+def test_configure_cluster_setup_with_params(httpserver: HTTPServer):
+  expected_json = {"state": "cluster_finished"}
+  httpserver.expect_request("/_cluster_setup",  method="POST").respond_with_json(expected_json)
+
+  for k in AllowedKeys.SERVER__CLUSTER_SETUP__DATA:
+    response = couch.server.configure_cluster_setup(data={k: ['test']})
+    assert isinstance(response, CouchError) is False
+
+  with pytest.raises(InvalidKeysException):
+    couch.server.configure_cluster_setup(data={'nonexisting_key': ''})
