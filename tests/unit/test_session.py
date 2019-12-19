@@ -1,21 +1,13 @@
 import pytest
 from pytest_httpserver import HTTPServer
 
-from relaxed import AllowedKeys, CouchDB, CouchError, InvalidKeysException
+from relaxed import CouchDB, CouchError
 from relaxed.session import Session
 
 
 @pytest.fixture
 def httpserver_listen_address():
     return ("127.0.0.1", 8000)
-
-
-@pytest.fixture(autouse=True)
-def setup():
-  """ setup any state specific to the execution of the given module."""
-#  global couch
-  #couch = CouchDB(username="test", password="test", host="http://127.0.0.1", port=8000)
-#  yield
 
 
 def test_session_auto_connect(httpserver: HTTPServer):
@@ -31,7 +23,7 @@ def test_session_auto_connect(httpserver: HTTPServer):
     response = couch.session.authenticate()
     assert isinstance(response, CouchError) is True
 
-@pytest.mark.skip(reason="Timeloop needs to be hacked to remove the logging to stdout...")
+
 def test_auto_renew_session_terminates_on_instance_destruction(httpserver: HTTPServer):
   expected_json = {"ok": True, "name": "root", "roles": ["_admin"]}
 
@@ -97,10 +89,18 @@ def test_keep_alive(httpserver: HTTPServer):
   assert 1 == len(session._keep_alive_timeloop.jobs)
 
   # only 1 keep alive is allowed
+  session.keep_alive(True)
+  assert 1 == len(session._keep_alive_timeloop.jobs)
+
+  # keep alive should not work without an auth token
   session.auth_token = None
   session.keep_alive(True)
   assert 1 == len(session._keep_alive_timeloop.jobs)
 
-
   session.keep_alive(False)
   assert 1 == len(session._keep_alive_timeloop.jobs)
+
+def test_create_basic_auth_header(httpserver: HTTPServer):
+  session = Session(username="test", password="test")
+  basic_auth_header = session._create_basic_auth_header()
+  assert basic_auth_header == {'Authorization': 'Basic dGVzdDp0ZXN0'}
