@@ -25,10 +25,6 @@ class Database():
   def get(self, couch_data):
     return couch_data
 
-  # TODO: build out decorators to handle status codes 201, 202.  Need to be able to handle
-  # different cases for different endpoints.  Good solution is to allow a pre and post
-  # handler to be supplied into the function?
-  # i.e.  CouchDB.db.get(db=mydb, prefetch=do_this_before_request, post_fetch=do_this_after_response)
   @RelaxedDecorators.endpoint('/:db:', method='put', query_keys=AllowedKeys.DATABASE__DB__CREATE_PARAMS)
   def create(self, couch_data):
     return couch_data
@@ -38,7 +34,7 @@ class Database():
     return couch_data
 
   @RelaxedDecorators.endpoint('/:db:', method='post', query_keys=AllowedKeys.DATABASE__DB__SAVE__PARAMS)
-  def save(self, couch_data):
+  def save_doc(self, couch_data):
     """
     Saves a document to the specified database
 
