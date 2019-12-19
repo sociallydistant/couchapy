@@ -112,4 +112,4 @@ class Session():
     elif (isEnabled and self._keep_alive > 0 and self.auth_token is not None):
       if (len(self._keep_alive_timeloop.jobs) == 0):
         self._keep_alive_timeloop._add_job(func=self.renew_session, interval=timedelta(seconds=self._keep_alive))
-      self._keep_alive_timeloop.start()
+        self._keep_alive_timeloop.start()
