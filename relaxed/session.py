@@ -43,6 +43,7 @@ class Session():
 
     self._keep_alive = kwargs.get('keep_alive', 0)
     self._keep_alive_timeloop = Timeloop()
+    self._keep_alive_timeloop.logger.setLevel('WARNING')
 
     self._name = kwargs.get('username', None)
     self._password = kwargs.get('password', None)
