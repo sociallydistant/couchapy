@@ -43,16 +43,16 @@ class AllowedKeys():
   SERVER__DBS_INFO__PARAMS = {'keys': []}
   SERVER__CLUSTER_SETUP__PARAMS = {'ensure_dbs_exist': []}
   SERVER__CLUSTER_SETUP__DATA = {'action': str, 'bind_address': str,
-                                         'host': str, 'port': int,
-                                         'node_code': int, 'remote_node': str,
-                                         'username': str, 'password': str,
-                                         'remote_current_user': str, 'remote_current_password': str,
-                                         'ensure_dbs_exist': [], }
+                                 'host': str, 'port': int,
+                                 'node_code': int, 'remote_node': str,
+                                 'username': str, 'password': str,
+                                 'remote_current_user': str, 'remote_current_password': str,
+                                 'ensure_dbs_exist': [], }
   SERVER__DB_UPDATES__PARAMS = {'feed': str, 'timeout': int, 'heartbeat': int, 'since': str}
   SERVER__REPLICATE__DATA = {'cancel': bool, 'continuous': bool,
-                                     'create_target': bool, 'doc_ids': [],
-                                     'filter': str, 'proxy': str,
-                                     'source': {}, 'target': {}}
+                             'create_target': bool, 'doc_ids': [],
+                             'filter': str, 'proxy': str,
+                             'source': {}, 'target': {}}
   SERVER__SCHEDULER_JOBS__PARAMS = {'limit': int, 'skip': int}
   SERVER__SCHEDULER_DOCS__PARAMS = {'limit': int, 'skip': int}
   SERVER__UUIDS__PARAMS = {'count': int}
@@ -61,7 +61,7 @@ class AllowedKeys():
   DATABASE__DB__SAVE__PARAMS = {'batch': str}
 
   VIEW__PARAMS = {'conflicts': bool, 'descending': bool,
-                  'startkey': [], 'start_key': [],
+                'startkey': [], 'start_key': [],
                   'startkey_docid': str, 'start_key_doc_id': str,
                   'endkey': [], 'end_key': [],
                   'endkey_docid': str, 'end_key_doc_id': str,
@@ -79,13 +79,31 @@ class AllowedKeys():
   DATABASE__LOCAL_DOCS_QUERIES__DATA = {'queries': []}
   DATABASE__BULK_GET__PARAMS = {'revs': bool}
   DATABASE__BULK_GET__DATA = {'docs': [{}]}
-  DATABASE__BULK_DOCS__DATA = {'docs': [{}], 'new_edits': bool }
+  DATABASE__BULK_DOCS__DATA = {'docs': [{}], 'new_edits': bool}
   DATABASE__FIND__DATA = {'selector': {}, 'limit': int, 'skip': int,
                           'sort': {}, 'fields': [], 'use_index': [], 'r': int,
                           'bookmark': str, 'update': bool,
                           'stable': bool, 'stale': str, 'execution_stats': bool}
   DATABASE__INDEX__DATA = {'index': {}, 'ddoc': str, 'name': str,
-                                        'type': str, 'partial_filter_selector': {}}
+                           'type': str, 'partial_filter_selector': {}}
+  DATABASE__CHANGES__PARAMS = {'doc_ids': [], 'conflicts': bool, 'descending': bool,
+                               'feed': str, 'filter': str, 'heartbeat': int,
+                               'include_docs': bool, 'attachments': bool, 'att_encoding_info': bool,
+                               'last-event-id': int, 'limit': int, 'since': str, 'style': str,
+                               'timeout': int, 'view': str, 'seq_interval': int}
+  DATABASE__CHANGES__DATA = {'doc_ids': []}
+  DATABASE__SECURITY__DATA = {'admins': {}, 'members': {}}
+  DATABASE__DOCUMENT__PARAMS = {'attachments': bool, 'att_encoding_info': bool,
+                                'atts_since': [], 'conflicts': bool, 'deleted_conflicts': bool,
+                                'latest': bool, 'local_seq': bool, 'meta': bool, 'open_revs': [],
+                                'rev': str, 'revs': bool, 'revs_info': bool}
+  DATABASE__DOCUMENT__NAMED_DOC__PARAMS = {'rev': str, 'batch': str, 'new_edits': bool}
+  DATABASE__DOCUMENT__DELETE__PARAMS = {'rev': str, 'batch': str}
+  DATABASE__DOCUMENT__COPY__PARAMS = {'rev': str, 'batch': str}
+  DATABASE__ATTACHMENT__GET__PARAMS = {'rev': str}
+  DATABASE__ATTACHMENT__SAVE__PARAMS = {'rev': str}
+  DATABASE__ATTACHMENT__INFO_PARAMS = {'rev': str}
+  DATABASE__ATTACHMENT__DELETE__PARAMS = {'rev': str, 'batch': str}
 
 class RelaxedDecorators():
   def _process_filter_format(filter_format, filter):
@@ -103,6 +121,7 @@ class RelaxedDecorators():
           'Invalid URI. This endpoint contains dynamic segments, but none were provided.  '
           f'Expected segment definition for "{identifier}".  '
           'Did you forget to pass a uri_segments dict?'))
+
       # a specific segment not provided
       elif len(matches.groups()) == 1 and matches.group(1) not in segments:
         identifier = matches.group(1)
