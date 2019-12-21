@@ -73,9 +73,9 @@ class Database():
   # TODO: implement custom verb handling in endpoint decorator
   # TODO: CouchDB COPY command uses custom headers to send data...need to implement a way to handle this too
   # see https://requests.readthedocs.io/en/master/user/advanced/
-  @RelaxedDecorators.endpoint('/:db:/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
-  def copy_doc(self, couch_data):
-    return couch_data
+  # @RelaxedDecorators.endpoint('/:db:/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
+  # def copy_doc(self, couch_data):
+  #   return couch_data
 
   @RelaxedDecorators.endpoint('/:db:/:docid:/:attname:', method='head', query_keys=AllowedKeys.DATABASE__ATTACHMENT__INFO_PARAMS)
   def get_attachment_info(self, couch_data):
@@ -118,9 +118,9 @@ class Database():
   # TODO: implement custom verb handling in endpoint decorator
   # TODO: CouchDB COPY command uses custom headers to send data...need to implement a way to handle this too
   # see https://requests.readthedocs.io/en/master/user/advanced/
-  @RelaxedDecorators.endpoint('/:db:/_design/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
-  def copy_ddoc(self, couch_data):
-    return couch_data
+  # @RelaxedDecorators.endpoint('/:db:/_design/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
+  # def copy_ddoc(self, couch_data):
+  #   return couch_data
 
   @RelaxedDecorators.endpoint('/:db:/_design/:docid:/:attname:', method='head', query_keys=AllowedKeys.DATABASE__ATTACHMENT__INFO_PARAMS)
   def get_ddoc_attachment_info(self, couch_data):
@@ -197,9 +197,9 @@ class Database():
   # TODO: implement custom verb handling in endpoint decorator
   # TODO: CouchDB COPY command uses custom headers to send data...need to implement a way to handle this too
   # see https://requests.readthedocs.io/en/master/user/advanced/
-  @RelaxedDecorators.endpoint('/:db:/_local/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
-  def copy_local_doc(self, couch_data):
-    return couch_data
+  # @RelaxedDecorators.endpoint('/:db:/_local/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
+  # def copy_local_doc(self, couch_data):
+  #   return couch_data
 
   @RelaxedDecorators.endpoint('/:db:/_design_docs', query_keys=AllowedKeys.VIEW__PARAMS)
   def get_design_docs(self, couch_data):
