@@ -61,7 +61,7 @@ class AllowedKeys():
   DATABASE__DB__SAVE__PARAMS = {'batch': str}
 
   VIEW__PARAMS = {'conflicts': bool, 'descending': bool,
-                'startkey': [], 'start_key': [],
+                  'startkey': [], 'start_key': [],
                   'startkey_docid': str, 'start_key_doc_id': str,
                   'endkey': [], 'end_key': [],
                   'endkey_docid': str, 'end_key_doc_id': str,
@@ -104,6 +104,15 @@ class AllowedKeys():
   DATABASE__ATTACHMENT__SAVE__PARAMS = {'rev': str}
   DATABASE__ATTACHMENT__INFO_PARAMS = {'rev': str}
   DATABASE__ATTACHMENT__DELETE__PARAMS = {'rev': str, 'batch': str}
+  DATABASE__LOCAL_DOCS__PARAMS = {'conflicts': bool, 'descending': bool,
+                                  'startkey': [], 'start_key': [],
+                                  'startkey_docid': str, 'start_key_doc_id': str,
+                                  'endkey': [], 'end_key': [],
+                                  'endkey_docid': str, 'end_key_doc_id': str,
+                                  'include_docs': bool, 'inclusive_end': bool,
+                                  'key': [], 'keys': [[]],
+                                  'limit': int, 'skip': int, 'update_seq': bool}
+  DATABASE__LOCAL_DOCS__DATA = {'keys': []}
 
 class RelaxedDecorators():
   def _process_filter_format(filter_format, filter):

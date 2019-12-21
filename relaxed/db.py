@@ -70,6 +70,13 @@ class Database():
   def delete_doc(self, couch_data):
     return couch_data
 
+  # TODO: implement custom verb handling in endpoint decorator
+  # TODO: CouchDB COPY command uses custom headers to send data...need to implement a way to handle this too
+  # see https://requests.readthedocs.io/en/master/user/advanced/
+  @RelaxedDecorators.endpoint('/:db:/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
+  def copy_doc(self, couch_data):
+    return couch_data
+
   @RelaxedDecorators.endpoint('/:db:/:docid:/:attname:', method='head', query_keys=AllowedKeys.DATABASE__ATTACHMENT__INFO_PARAMS)
   def get_attachment_info(self, couch_data):
     return couch_data
@@ -88,19 +95,39 @@ class Database():
   def delete_attachment(self, couch_data):
     return couch_data
 
-  # TODO: implement custom verb handling in endpoint decorator
-  # TODO: CouchDB COPY command uses custom headers to send data...need to implement a way to handle this too
-  # see https://requests.readthedocs.io/en/master/user/advanced/
-  @RelaxedDecorators.endpoint('/:db:/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
-  def copy_doc(self, couch_data):
-    return couch_data
-
   @RelaxedDecorators.endpoint('/:db:/_all_docs', query_keys=AllowedKeys.VIEW__PARAMS)
   def get_docs(self, couch_data):
     return couch_data
 
   @RelaxedDecorators.endpoint('/:db:/_all_docs', method='post', data_keys=AllowedKeys.DATABASE__ALL_DOCS__DATA)
   def get_docs_by_key(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_all_docs', query_keys=AllowedKeys.DATABASE__LOCAL_DOCS__PARAMS)
+  def get_local_docs(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_all_docs', method='post', data_keys=AllowedKeys.DATABASE__LOCAL_DOCS__DATA)
+  def get_local_docs_by_key(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_local/:docid:', query_keys=AllowedKeys.DATABASE__DOCUMENT__PARAMS)
+  def get_local_doc(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_local/:docid:', method='put', query_keys=AllowedKeys.DATABASE__DOCUMENT__NAMED_DOC__PARAMS)
+  def save_local_named_doc(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_local/:docid:', method='delete', query_keys=AllowedKeys.DATABASE__DELETE_DOC__PARAMS)
+  def delete_local_doc(self, couch_data):
+    return couch_data
+
+  # TODO: implement custom verb handling in endpoint decorator
+  # TODO: CouchDB COPY command uses custom headers to send data...need to implement a way to handle this too
+  # see https://requests.readthedocs.io/en/master/user/advanced/
+  @RelaxedDecorators.endpoint('/:db:/_local/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
+  def copy_local_doc(self, couch_data):
     return couch_data
 
   @RelaxedDecorators.endpoint('/:db:/_design_docs', query_keys=AllowedKeys.VIEW__PARAMS)
