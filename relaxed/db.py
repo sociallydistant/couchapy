@@ -95,12 +95,83 @@ class Database():
   def delete_attachment(self, couch_data):
     return couch_data
 
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:', method='head', query_keys=AllowedKeys.DATABASE__DOCUMENT__PARAMS)
+  def get_ddoc_info(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:/_info')
+  def get_ddoc_details(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:', query_keys=AllowedKeys.DATABASE__DOCUMENT__PARAMS)
+  def get_ddoc(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:', method='put', query_keys=AllowedKeys.DATABASE__DOCUMENT__NAMED_DOC__PARAMS)
+  def save_named_ddoc(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:', method='delete', query_keys=AllowedKeys.DATABASE__DELETE_DOC__PARAMS)
+  def delete_ddoc(self, couch_data):
+    return couch_data
+
+  # TODO: implement custom verb handling in endpoint decorator
+  # TODO: CouchDB COPY command uses custom headers to send data...need to implement a way to handle this too
+  # see https://requests.readthedocs.io/en/master/user/advanced/
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
+  def copy_ddoc(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:/:attname:', method='head', query_keys=AllowedKeys.DATABASE__ATTACHMENT__INFO_PARAMS)
+  def get_ddoc_attachment_info(self, couch_data):
+    return couch_data
+
+  # TODO: implement ability for endpoint to return non-json data
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:/:attname:', query_keys=AllowedKeys.DATABASE__ATTACHMENT__GET__PARAMS)
+  def get_ddoc_attachment(self, couch_data):
+    return couch_data
+
+  # TODO: confirm ability to pass custom headers to endpoint decorator
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:/:attname:', method='put', query_keys=AllowedKeys.DATABASE__ATTACHMENT__SAVE__PARAMS)
+  def save_ddoc_attachment(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:/:attname:', method='delete', query_keys=AllowedKeys.DATABASE__ATTACHMENT__DELETE__PARAMS)
+  def delete_ddoc_attachment(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:/_view/:view:', query_keys=AllowedKeys.VIEW__PARAMS)
+  def get_view(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:/_view/:view:', query_keys=AllowedKeys.VIEW__PARAMS)
+  def get_view(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:/_view/:view:', method='post', data_keys=AllowedKeys.DATABASE__VIEW_BY_KEY__DATA)
+  def filter_view(self, couch_data):
+    return couch_data
+
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:/_view/:view:/queries', method='post', data_keys=AllowedKeys.DATABASE__VIEW_QUERIES__DATA)
+  def filter_view_with_queries(self, couch_data):
+    return couch_data
+
+
+
+
+
+
+
+
+
+
+
   @RelaxedDecorators.endpoint('/:db:/_all_docs', query_keys=AllowedKeys.VIEW__PARAMS)
   def get_docs(self, couch_data):
     return couch_data
 
   @RelaxedDecorators.endpoint('/:db:/_all_docs', method='post', data_keys=AllowedKeys.DATABASE__ALL_DOCS__DATA)
-  def get_docs_by_key(self, couch_data):
+  def filter_docs(self, couch_data):
     return couch_data
 
   @RelaxedDecorators.endpoint('/:db:/_all_docs', query_keys=AllowedKeys.DATABASE__LOCAL_DOCS__PARAMS)
@@ -139,15 +210,15 @@ class Database():
     return couch_data
 
   @RelaxedDecorators.endpoint('/:db:/_all_docs/queries', method='post', data_keys=AllowedKeys.DATABASE__ALL_DOCS_QUERIES__DATA)
-  def get_docs_by_query(self, couch_data):
+  def filter_docs_with_queries(self, couch_data):
     return couch_data
 
   @RelaxedDecorators.endpoint('/:db:/_design_docs/queries', method='post', data_keys=AllowedKeys.DATABASE__DESIGN_DOCS_QUERIES__DATA)
-  def get_design_docs_by_query(self, couch_data):
+  def filter_ddocs_with_queries(self, couch_data):
     return couch_data
 
   @RelaxedDecorators.endpoint('/:db:/_local_docs/queries', method='post', data_keys=AllowedKeys.DATABASE__LOCAL_DOCS_QUERIES__DATA)
-  def get_local_docs_by_query(self, couch_data):
+  def filter_local_docs_with_queries(self, couch_data):
     return couch_data
 
   @RelaxedDecorators.endpoint('/:db:/_bulk_get', method='post',

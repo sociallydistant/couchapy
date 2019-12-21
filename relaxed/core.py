@@ -113,6 +113,8 @@ class AllowedKeys():
                                   'key': [], 'keys': [[]],
                                   'limit': int, 'skip': int, 'update_seq': bool}
   DATABASE__LOCAL_DOCS__DATA = {'keys': []}
+  DATABASE__VIEW_BY_KEY__DATA = {'keys': []}
+  DATABASE__VIEW_QUERIES__DATA = {'queries': []}
 
 class RelaxedDecorators():
   def _process_filter_format(filter_format, filter):
