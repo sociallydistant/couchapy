@@ -66,7 +66,7 @@ class Database():
   def save_named_doc(self, couch_data):
     return couch_data
 
-  @RelaxedDecorators.endpoint('/:db:/:docid:', method='delete', query_keys=AllowedKeys.DATABASE__DELETE_DOC__PARAMS)
+  @RelaxedDecorators.endpoint('/:db:/:docid:', method='delete', query_keys=AllowedKeys.DATABASE__DOCUMENT__DELETE__PARAMS)
   def delete_doc(self, couch_data):
     return couch_data
 
@@ -111,7 +111,7 @@ class Database():
   def save_named_ddoc(self, couch_data):
     return couch_data
 
-  @RelaxedDecorators.endpoint('/:db:/_design/:docid:', method='delete', query_keys=AllowedKeys.DATABASE__DELETE_DOC__PARAMS)
+  @RelaxedDecorators.endpoint('/:db:/_design/:docid:', method='delete', query_keys=AllowedKeys.DATABASE__DOCUMENT__DELETE__PARAMS)
   def delete_ddoc(self, couch_data):
     return couch_data
 
@@ -190,7 +190,7 @@ class Database():
   def save_local_named_doc(self, couch_data):
     return couch_data
 
-  @RelaxedDecorators.endpoint('/:db:/_local/:docid:', method='delete', query_keys=AllowedKeys.DATABASE__DELETE_DOC__PARAMS)
+  @RelaxedDecorators.endpoint('/:db:/_local/:docid:', method='delete', query_keys=AllowedKeys.DATABASE__DOCUMENT__DELETE__PARAMS)
   def delete_local_doc(self, couch_data):
     return couch_data
 
