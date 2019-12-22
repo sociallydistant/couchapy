@@ -24,3 +24,11 @@ def test_creating_a_valid_user(httpserver: HTTPServer):
   response = couch.user.create(name='test', password='test')
 
   assert response == expected_json
+
+def test_get_a_valid_user(httpserver: HTTPServer):
+  expected_json = {"ok": True, "id": "org.couchdb.user:test", "rev": "1-e0ebfb84005b920488fc7a8cc5470cc0"}
+
+  httpserver.expect_request("/_users/org.couchdb.user:testuser",  method="GET").respond_with_json(expected_json)
+  response = couch.user.get(id='testuser')
+
+  assert response == expected_json

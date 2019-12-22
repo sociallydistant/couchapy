@@ -18,6 +18,10 @@ class User():
       userdoc = {'name': name, 'password': password, 'roles': kwargs.get('roles', []), 'type': "user"}
       return self.db.save_named_doc(uri_segments={'db': '_users', 'docid': docid}, data=userdoc)
 
+    def get(self, id):
+      docid = f'org.couchdb.user:{id}';
+      return self.db.get_doc(uri_segments={'db': '_users', 'docid': docid})
+
   __self = None
 
   def __init__(self, **kwargs):
