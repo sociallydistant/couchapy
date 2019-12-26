@@ -207,6 +207,13 @@ class RelaxedDecorators():
                                     cookies=cookies,
                                     params=kwargs.get('params', None),
                                     json=kwargs.get('data'))
+        elif request_method == 'head':
+          response = request_action(f'{self.session.address}{uri}',
+                                    headers=self.session._headers,
+                                    cookies=cookies,
+                                    params=kwargs.get('params', None),
+                                    json=kwargs.get('data'))
+          return fn(self, response.headers.get('ETag', response.json()))
         else:
           response = request_action(f'{self.session.address}{uri}',
                                     headers=self.session._headers,
