@@ -16,6 +16,7 @@ class User():
     def create(self, name, password, **kwargs):
       docid = f'org.couchdb.user:{name}'
       userdoc = {'name': name, 'password': password, 'roles': kwargs.get('roles', []), 'type': "user"}
+      userdoc.update(**kwargs)
       return self.db.save_named_doc(uri_segments={'db': '_users', 'docid': docid}, data=userdoc)
 
     def get(self, id):
@@ -213,7 +214,7 @@ class RelaxedDecorators():
                                     cookies=cookies,
                                     params=kwargs.get('params', None),
                                     json=kwargs.get('data'))
-          return fn(self, response.headers.get('ETag', response.json()))
+          return fn(self, response.headers.get('ETag'))
         else:
           response = request_action(f'{self.session.address}{uri}',
                                     headers=self.session._headers,
