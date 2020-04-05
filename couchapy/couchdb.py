@@ -59,7 +59,7 @@ class CouchDB():
 
         self.session = couchapy.session.Session(self, **kwargs)
         self.server = couchapy.server.Server(self, **kwargs.get('server_kwargs', {}))
-        # self.db = couchapy.database.Database(session=self.session, **kwargs)
+        self.db = couchapy.database.Database(self, **kwargs.get('database_kwargs', {}))
         # self.user = User(session=self.session, db=self.db)
 
         # TODO: implement a generic Error class to hold error information that consumer can check

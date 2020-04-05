@@ -3,10 +3,10 @@ import  couchapy.error
 
 
 class Database():
-    def __init__(self, **kwargs):
-        self.session = kwargs.get('session', None)
+    def __init__(self, parent, **kwargs):
+        self.parent = parent
         self._db = kwargs.get('db', '_global_changes')
-        self._predefined_segments = {'db': self._db}
+        self._predefined_segments = kwargs.get('predefined_segments', {'db': self._db})
 
     @couch.endpoint('/:db:', method='head')
     def headers(self, couch_data):

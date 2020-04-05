@@ -13,7 +13,7 @@ def httpserver_listen_address():
 def setup():
     """ setup any state specific to the execution of the given module."""
     global couch
-    couch = couchapy.CouchDB(name="test", password="test", host="http://127.0.0.1", port=8000, db='_local')
+    couch = couchapy.CouchDB(name="test", password="test", host="http://127.0.0.1", port=8000, database_kwargs={"db": '_local'})
     yield
 
 
