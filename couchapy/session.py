@@ -35,7 +35,7 @@ class Session():
         self.parent = parent
 
     def _create_basic_auth_header(self):
-        return requests.auth.HTTPBasicAuth(self._name, self._password)(requests.Request()).headers
+        return requests.auth.HTTPBasicAuth(self.parent.name, self.parent.password)(requests.Request()).headers
 
     def set_auth_token_from_headers(self, headers):
         # if a new auth token is issued, include it in the response, otherwise, return the original
