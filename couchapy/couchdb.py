@@ -68,7 +68,7 @@ class CouchDB():
 
         # start an auto session renewal thread if configured to do so
         if self.session.auth_token:
-            self.start_auto_session(self.session_timeout)
+            self.start_auto_session()
 
     def __enter__(self):
         self._context_manager = True
