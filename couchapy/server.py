@@ -40,7 +40,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_membership')
-    def get_membership(self, couch_data):
+    def memberships(self, couch_data):
         return couch_data
 
     @couch.endpoint('/_replicate', method='post', data_keys=couch.AllowedKeys.SERVER__REPLICATE__DATA)

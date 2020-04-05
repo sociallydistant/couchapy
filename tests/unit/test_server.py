@@ -186,25 +186,25 @@ def test_get_database_updates(httpserver: test_server.HTTPServer):
         couch.server.database_updates(params={'nonexisting_key': ''})
 
 
-# def test_get_membership(httpserver: HTTPServer):
-#   expected_json = {
-#     "all_nodes": [
-#         "node1@127.0.0.1",
-#         "node2@127.0.0.1",
-#         "node3@127.0.0.1"
-#     ],
-#     "cluster_nodes": [
-#         "node1@127.0.0.1",
-#         "node2@127.0.0.1",
-#         "node3@127.0.0.1"
-#     ]
-#   }
-#
-#   httpserver.expect_oneshot_request("/_membership",  method="GET").respond_with_json(expected_json)
-#   response = couch.server.get_membership()
-#   assert response == expected_json
-#
-#
+def test_get_membership(httpserver: test_server.HTTPServer):
+    expected_json = {
+        "all_nodes": [
+            "node1@127.0.0.1",
+            "node2@127.0.0.1",
+            "node3@127.0.0.1"
+        ],
+        "cluster_nodes": [
+            "node1@127.0.0.1",
+            "node2@127.0.0.1",
+            "node3@127.0.0.1"
+        ]
+    }
+
+    httpserver.expect_oneshot_request("/_membership", method="GET").respond_with_json(expected_json)
+    response = couch.server.memberships()
+    assert response == expected_json
+
+
 # def test_replicate(httpserver: HTTPServer):
 #   expected_json = {
 #     "history": [
