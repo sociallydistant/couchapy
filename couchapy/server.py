@@ -36,7 +36,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_db_updates', method='post', query_keys=couch.AllowedKeys.SERVER__DB_UPDATES__PARAMS)
-    def get_database_updates(self, couch_data):
+    def database_updates(self, couch_data):
         return couch_data
 
     @couch.endpoint('/_membership')
