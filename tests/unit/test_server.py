@@ -417,35 +417,35 @@ def test_get_replicator_doc(httpserver: test_server.HTTPServer):
         assert isinstance(response, couchapy.CouchError) is True
 
 
-# def test_get_node_server_stats(httpserver: HTTPServer):
-#   expected_json = {
-#     "value": {
-#       "min": 0,
-#       "max": 0,
-#       "arithmetic_mean": 0,
-#       "geometric_mean": 0,
-#       "harmonic_mean": 0,
-#       "median": 0,
-#       "variance": 0,
-#       "standard_deviation": 0,
-#       "skewness": 0,
-#       "kurtosis": 0,
-#       "percentile": [[50, 0], [75, 0], [90, 0], [95, 0], [99, 0], [999, 0]],
-#       "histogram": [[0, 0]],
-#       "n": 0
-#     },
-#     "type": "histogram",
-#     "desc": "length of a request inside CouchDB without MochiWeb"
-#   }
-#
-#   httpserver.expect_request("/_node/_local/_stats",  method="GET").respond_with_json(expected_json)
-#   response = couch.server.get_node_server_stats(uri_segments={'node_name': '_local'})
-#   assert response == expected_json
-#
-#   response = couch.server.get_node_server_stats()
-#   assert response == expected_json
-#
-#
+def test_get_node_server_stats(httpserver: test_server.HTTPServer):
+    expected_json = {
+        "value": {
+            "min": 0,
+            "max": 0,
+            "arithmetic_mean": 0,
+            "geometric_mean": 0,
+            "harmonic_mean": 0,
+            "median": 0,
+            "variance": 0,
+            "standard_deviation": 0,
+            "skewness": 0,
+            "kurtosis": 0,
+            "percentile": [[50, 0], [75, 0], [90, 0], [95, 0], [99, 0], [999, 0]],
+            "histogram": [[0, 0]],
+            "n": 0
+        },
+        "type": "histogram",
+        "desc": "length of a request inside CouchDB without MochiWeb"
+    }
+
+    httpserver.expect_request("/_node/_local/_stats", method="GET").respond_with_json(expected_json)
+    response = couch.server.node_stats(uri_segments={'node_name': '_local'})
+    assert response == expected_json
+
+    response = couch.server.node_stats()
+    assert response == expected_json
+
+
 # def test_get_node_server_stat(httpserver: HTTPServer):
 #   expected_json = {
 #     "value": {
