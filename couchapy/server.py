@@ -55,7 +55,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_scheduler/docs', query_keys=couch.AllowedKeys.SERVER__SCHEDULER_DOCS__PARAMS)
-    def get_replication_docs(self, couch_data):
+    def replication_docs(self, couch_data):
         """
         All Replication documents
         """
