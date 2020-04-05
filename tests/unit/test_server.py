@@ -579,18 +579,19 @@ def test_set_node_config(httpserver: test_server.HTTPServer):
         response = couch.server.set_node_config(uri_segments={'node_name': '_local', 'key': 'httpd/port'}, data="5984")
         assert isinstance(response, couchapy.CouchError) is True
 
-# def test_delete_config(httpserver: HTTPServer):
-#   expected_json = {'data': "5984"}
-#
-#   httpserver.expect_oneshot_request("/_node/_local/_config/httpd/port",  method="DELETE").respond_with_json(expected_json)
-#   response = couch.server.delete_config(uri_segments={'node_name': '_local', 'key': 'httpd/port'})
-#   assert response == expected_json
-#
-#   for code in [400, 401]:
-#     httpserver.expect_oneshot_request("/_node/_local/_config/httpd/port",  method="DELETE").respond_with_json(expected_json, status=code)
-#     response = couch.server.delete_config(uri_segments={'node_name': '_local', 'key': 'httpd/port'})
-#     assert isinstance(response, CouchError) is True
-#
+
+def test_delete_node_config(httpserver: test_server.HTTPServer):
+    expected_json = {'data': "5984"}
+
+    httpserver.expect_oneshot_request("/_node/_local/_config/httpd/port", method="DELETE").respond_with_json(expected_json)
+    response = couch.server.delete_node_config(uri_segments={'node_name': '_local', 'key': 'httpd/port'})
+    assert response == expected_json
+
+    for code in [400, 401]:
+        httpserver.expect_oneshot_request("/_node/_local/_config/httpd/port", method="DELETE").respond_with_json(expected_json, status=code)
+        response = couch.server.delete_node_config(uri_segments={'node_name': '_local', 'key': 'httpd/port'})
+        assert isinstance(response, couchapy.CouchError) is True
+
 # def test_generate_uiids(httpserver: HTTPServer):
 #   expected_json = {
 #       "uuids": [

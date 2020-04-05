@@ -126,7 +126,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_node/:node_name:/_config/:key:', method='delete')
-    def delete_config(self, couch_data):
+    def delete_node_config(self, couch_data):
         """
         Delete the server configuration key defined by :key: of the specified node.
         """
