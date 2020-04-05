@@ -592,45 +592,46 @@ def test_delete_node_config(httpserver: test_server.HTTPServer):
         response = couch.server.delete_node_config(uri_segments={'node_name': '_local', 'key': 'httpd/port'})
         assert isinstance(response, couchapy.CouchError) is True
 
-# def test_generate_uiids(httpserver: HTTPServer):
-#   expected_json = {
-#       "uuids": [
-#           "75480ca477454894678e22eec6002413",
-#           "75480ca477454894678e22eec600250b",
-#           "75480ca477454894678e22eec6002c41",
-#           "75480ca477454894678e22eec6003b90",
-#           "75480ca477454894678e22eec6003fca",
-#           "75480ca477454894678e22eec6004bef",
-#           "75480ca477454894678e22eec600528f",
-#           "75480ca477454894678e22eec6005e0b",
-#           "75480ca477454894678e22eec6006158",
-#           "75480ca477454894678e22eec6006161"
-#       ]
-#   }
-#
-#   httpserver.expect_oneshot_request("/_uuids",  method="GET").respond_with_json(expected_json)
-#   response = couch.server.generate_uuids()
-#   assert response == expected_json['uuids']
-#
-#   expected_json = {"uuids": ["75480ca477454894678e22eec6002413"]}
-#   httpserver.expect_oneshot_request("/_uuids",  method="GET").respond_with_json(expected_json)
-#   response = couch.server.generate_uuids()
-#   assert response == expected_json['uuids'][0]
-#
-#   for code in [400]:
-#     httpserver.expect_oneshot_request("/_uuids",  method="GET").respond_with_json(expected_json, status=code)
-#     response = couch.server.generate_uuids()
-#     assert isinstance(response, CouchError) is True
-#
-#   httpserver.expect_request("/_uuids",  method="GET").respond_with_json(expected_json)
-#   for k in AllowedKeys.SERVER__UUIDS__PARAMS:
-#     response = couch.server.generate_uuids(params={k: ['test']})
-#     assert isinstance(response, CouchError) is False
-#
-#   with pytest.raises(InvalidKeysException):
-#     couch.server.generate_uuids(params={'nonexisting_key': ''})
-#
-#
+
+def test_generate_uiids(httpserver: test_server.HTTPServer):
+    expected_json = {
+        "uuids": [
+            "75480ca477454894678e22eec6002413",
+            "75480ca477454894678e22eec600250b",
+            "75480ca477454894678e22eec6002c41",
+            "75480ca477454894678e22eec6003b90",
+            "75480ca477454894678e22eec6003fca",
+            "75480ca477454894678e22eec6004bef",
+            "75480ca477454894678e22eec600528f",
+            "75480ca477454894678e22eec6005e0b",
+            "75480ca477454894678e22eec6006158",
+            "75480ca477454894678e22eec6006161"
+        ]
+    }
+
+    httpserver.expect_oneshot_request("/_uuids", method="GET").respond_with_json(expected_json)
+    response = couch.server.generate_uuids()
+    assert response == expected_json['uuids']
+
+    expected_json = {"uuids": ["75480ca477454894678e22eec6002413"]}
+    httpserver.expect_oneshot_request("/_uuids", method="GET").respond_with_json(expected_json)
+    response = couch.server.generate_uuids()
+    assert response == expected_json['uuids'][0]
+
+    for code in [400]:
+        httpserver.expect_oneshot_request("/_uuids", method="GET").respond_with_json(expected_json, status=code)
+        response = couch.server.generate_uuids()
+        assert isinstance(response, couchapy.CouchError) is True
+
+    httpserver.expect_request("/_uuids", method="GET").respond_with_json(expected_json)
+    for k in AllowedKeys.SERVER__UUIDS__PARAMS:
+        response = couch.server.generate_uuids(params={k: ['test']})
+        assert isinstance(response, couchapy.CouchError) is False
+
+    with pytest.raises(couchapy.InvalidKeysException):
+        couch.server.generate_uuids(params={'nonexisting_key': ''})
+
+
 # def test_get_uptime(httpserver: HTTPServer):
 #   expected_json = {"uptime": 259, "memory": 1000}
 #
