@@ -34,9 +34,43 @@ def test_empty_constructor():
     assert isinstance(couch.session, couchapy.Session) and couch.session.auth_token is None
 
 
-def test_constructor_with_params():
-    assert False, \
-        "TEST STUB: Not implemented"
+def test_constructor_with_params(httpserver: test_server.HTTPServer):
+    json_response = {"ok": True, "name": "root", "roles": ["_admin"]}
+
+    httpserver.expect_oneshot_request("/_session", method="POST") \
+              .respond_with_json(json_response,
+                                 headers={'Set-Cookie': 'AuthSession=cm9vdDo1MEJCRkYwMjq0LO0ylOIwShrgt8y-UkhI-c6BGw; '
+                                                        'Version=1; Path=/; HttpOnly'})
+
+    couch = couchapy.CouchDB(custom_headers={"header_key": "header_value"},
+                             session_timeout=60,
+                             keep_alive=True,
+                             host="https://localhost",
+                             port=6984,
+                             name="someadmin",
+                             password="somepassword",
+                             admin_party=True,
+                             auto_connect=False)
+
+    assert 'header_key' in couch.custom_headers and couch.custom_headers['header_key'] == 'header_value'
+    assert couch.session_timeout == 60
+    assert couch.keep_alive is True
+    assert couch.host == "https://localhost"
+    assert couch.port == 6984
+    assert couch.name == "someadmin"
+    assert couch.password == "somepassword"
+    assert couch._admin_party is True
+    assert couch.session.auth_token is None
+
+    couch = couchapy.CouchDB(custom_headers={"header_key": "header_value"},
+                             session_timeout=60,
+                             port=8000,
+                             keep_alive=True,
+                             name="someadmin",
+                             password="somepassword",
+                             auto_connect=True)
+
+    assert couch._auto_renew_worker is not None
 
 
 def test_context_manager():
@@ -124,3 +158,19 @@ def test_auto_session_renewal(httpserver: test_server.HTTPServer):
     assert couch._auto_renew_worker is None
 
 
+# def test_creating_a_valid_user(httpserver: HTTPServer):
+#     expected_json = {"ok": True, "id": "org.couchdb.user:test", "rev": "1-e0ebfb84005b920488fc7a8cc5470cc0"}
+#
+#     httpserver.expect_request("/_users/org.couchdb.user:test", method="PUT").respond_with_json(expected_json)
+#     response = couch.user.create(name='test', password='test')
+#
+#     assert response == expected_json
+#
+#
+# def test_get_a_valid_user(httpserver: HTTPServer):
+#     expected_json = {"ok": True, "id": "org.couchdb.user:test", "rev": "1-e0ebfb84005b920488fc7a8cc5470cc0"}
+#
+#     httpserver.expect_request("/_users/org.couchdb.user:testuser", method="GET").respond_with_json(expected_json)
+#     response = couch.user.get(id='testuser')
+#
+#     assert response == expected_json
