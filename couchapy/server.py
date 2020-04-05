@@ -119,7 +119,7 @@ class Server():
 
     # TODO: implement put in endpoint decorator
     @couch.endpoint('/_node/:node_name:/_config/:key:', method='put')
-    def set_config(self, couch_data):
+    def set_node_config(self, couch_data):
         """
         Create or update the server configuration key defined by :key: of the specified node.
         """
