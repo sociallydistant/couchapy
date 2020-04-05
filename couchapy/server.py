@@ -83,7 +83,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_node/:node_name:/_stats/:stat:')
-    def get_node_server_stat(self, couch_data):
+    def node_stat(self, couch_data):
         """
         Get a section or subsection of the statistics for the running server with name :node_name:
         """

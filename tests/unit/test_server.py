@@ -446,35 +446,35 @@ def test_get_node_server_stats(httpserver: test_server.HTTPServer):
     assert response == expected_json
 
 
-# def test_get_node_server_stat(httpserver: HTTPServer):
-#   expected_json = {
-#     "value": {
-#       "min": 0,
-#       "max": 0,
-#       "arithmetic_mean": 0,
-#       "geometric_mean": 0,
-#       "harmonic_mean": 0,
-#       "median": 0,
-#       "variance": 0,
-#       "standard_deviation": 0,
-#       "skewness": 0,
-#       "kurtosis": 0,
-#       "percentile": [[50, 0], [75, 0], [90, 0], [95, 0], [99, 0], [999, 0]],
-#       "histogram": [[0, 0]],
-#       "n": 0
-#     },
-#     "type": "histogram",
-#     "desc": "length of a request inside CouchDB without MochiWeb"
-#   }
-#
-#   httpserver.expect_request("/_node/_local/_stats/couchdb/request_time",  method="GET").respond_with_json(expected_json)
-#   response = couch.server.get_node_server_stat(uri_segments={'node_name': '_local', 'stat': 'couchdb/request_time'})
-#   assert response == expected_json
-#
-#   response = couch.server.get_node_server_stat()
-#   assert response == expected_json
-#
-#
+def test_get_node_server_stat(httpserver: test_server.HTTPServer):
+    expected_json = {
+        "value": {
+            "min": 0,
+            "max": 0,
+            "arithmetic_mean": 0,
+            "geometric_mean": 0,
+            "harmonic_mean": 0,
+            "median": 0,
+            "variance": 0,
+            "standard_deviation": 0,
+            "skewness": 0,
+            "kurtosis": 0,
+            "percentile": [[50, 0], [75, 0], [90, 0], [95, 0], [99, 0], [999, 0]],
+            "histogram": [[0, 0]],
+            "n": 0
+        },
+        "type": "histogram",
+        "desc": "length of a request inside CouchDB without MochiWeb"
+    }
+
+    httpserver.expect_request("/_node/_local/_stats/couchdb/request_time", method="GET").respond_with_json(expected_json)
+    response = couch.server.node_stat(uri_segments={'node_name': '_local', 'stat': 'couchdb/request_time'})
+    assert response == expected_json
+
+    response = couch.server.node_stat()
+    assert response == expected_json
+
+
 # def test_get_node_system_stats(httpserver: HTTPServer):
 #   expected_json = {"uptime": 259, "memory": 1000}
 #
