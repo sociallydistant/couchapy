@@ -8,7 +8,7 @@ class Server():
         self._predefined_segments = kwargs.get('predefined_segments', {'node_name': '_local'})
 
     @couch.endpoint('/')
-    def get_info(self, couch_data):
+    def info(self, couch_data):
         return couch_data
 
     @couch.endpoint('/_up')
