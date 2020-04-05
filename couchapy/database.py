@@ -145,10 +145,6 @@ class Database():
     def get_view(self, couch_data):
         return couch_data
 
-    @couch.endpoint('/:db:/_design/:docid:/_view/:view:', query_keys=couch.AllowedKeys.VIEW__PARAMS)
-    def get_view(self, couch_data):
-        return couch_data
-
     @couch.endpoint('/:db:/_design/:docid:/_view/:view:', method='post', data_keys=couch.AllowedKeys.DATABASE__VIEW_BY_KEY__DATA)
     def filter_view(self, couch_data):
         return couch_data
@@ -156,16 +152,6 @@ class Database():
     @couch.endpoint('/:db:/_design/:docid:/_view/:view:/queries', method='post', data_keys=couch.AllowedKeys.DATABASE__VIEW_QUERIES__DATA)
     def filter_view_with_queries(self, couch_data):
         return couch_data
-
-
-
-
-
-
-
-
-
-
 
     @couch.endpoint('/:db:/_all_docs', query_keys=couch.AllowedKeys.VIEW__PARAMS)
     def get_docs(self, couch_data):
