@@ -5,16 +5,11 @@ from re import sub
 import  couchapy.error
 
 
-class InvalidKeysException(Exception):
-    """The passed data contains keys that are not allowed"""
-    pass
-
-
 def _process_filter_format(filter_format, filter):
     if (filter_format is not None):
         for key in filter.keys():
             if key not in filter_format:
-                raise InvalidKeysException("The provided filter does not meet the expected format.")
+                raise couchapy.error.InvalidKeysException("The provided filter does not meet the expected format.")
 
 
 def _build_uri(template: str, segments: dict):
