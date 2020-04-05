@@ -20,7 +20,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_all_dbs', query_keys=couch.AllowedKeys.SERVER__ALL_DBS__PARAMS)
-    def get_database_names(self, couch_data):
+    def database_names(self, couch_data):
         return couch_data
 
     @couch.endpoint('/_dbs_info', method='post', data_keys=couch.AllowedKeys.SERVER__DBS_INFO__PARAMS)

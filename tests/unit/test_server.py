@@ -86,7 +86,7 @@ def test_get_active_tasks(httpserver: test_server.HTTPServer):
 def test_get_database_names_without_params(httpserver: test_server.HTTPServer):
     expected_json = ["_users", "contacts", "docs", "invoices", "locations"]
     httpserver.expect_oneshot_request("/_all_dbs", method="GET").respond_with_json(expected_json)
-    response = couch.server.get_database_names()
+    response = couch.server.database_names()
     assert response == expected_json
 
 
@@ -95,11 +95,11 @@ def test_get_database_names_with_params(httpserver: test_server.HTTPServer):
     httpserver.expect_request("/_all_dbs", method="GET").respond_with_json(expected_json)
 
     for k in AllowedKeys.SERVER__ALL_DBS__PARAMS:
-        response = couch.server.get_database_names(params={k: ''})
+        response = couch.server.database_names(params={k: ''})
         assert isinstance(response, couchapy.CouchError) is False
 
     with pytest.raises(couchapy.InvalidKeysException):
-        couch.server.get_database_names(params={'nonexisting_key': ''})
+        couch.server.database_names(params={'nonexisting_key': ''})
 
 
 def test_get_databases_without_params(httpserver: test_server.HTTPServer):
