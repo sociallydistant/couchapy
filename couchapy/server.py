@@ -148,13 +148,13 @@ class Server():
         return couch_data.get('uuids')
 
     @couch.endpoint('/_node/:node_name:/_system')
-    def get_uptime(self, couch_data):
+    def uptime(self, couch_data):
         """
         Get the up time, in seconds, for the specified node.
 
         :returns CouchError if an error occured accessing the couch api
         :returns int Number of seconds that the server has been running, or -1 if the uptime key is missing.
 
-        Usage: couchdb_instance.get_uptime(node_name='_local')
+        Usage: couchdb_instance.get_uptime(uri_segments={'node_name': '_local'})
         """
         return couch_data if isinstance(couch_data, couchapy.error.CouchError) else couch_data.get('uptime', -1)

@@ -632,9 +632,9 @@ def test_generate_uiids(httpserver: test_server.HTTPServer):
         couch.server.generate_uuids(params={'nonexisting_key': ''})
 
 
-# def test_get_uptime(httpserver: HTTPServer):
-#   expected_json = {"uptime": 259, "memory": 1000}
-#
-#   httpserver.expect_request("/_node/_local/_system",  method="GET").respond_with_json(expected_json)
-#   response = couch.server.get_uptime(uri_segments={'node_name': '_local'})
-#   assert response == expected_json['uptime']
+def test_get_uptime(httpserver: test_server.HTTPServer):
+    expected_json = {"uptime": 259, "memory": 1000}
+
+    httpserver.expect_request("/_node/_local/_system", method="GET").respond_with_json(expected_json)
+    response = couch.server.get_uptime(uri_segments={'node_name': '_local'})
+    assert response == expected_json['uptime']
