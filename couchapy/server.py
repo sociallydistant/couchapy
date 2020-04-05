@@ -69,7 +69,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_scheduler/docs/:db:/_replicator/:docid:')
-    def get_replicator_doc(self, couch_data):
+    def replicator_doc(self, couch_data):
         """
         Retrives a single replication document for the specified replicator database
         """
