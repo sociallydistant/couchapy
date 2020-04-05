@@ -28,7 +28,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_cluster_setup', query_keys=couch.AllowedKeys.SERVER__CLUSTER_SETUP__PARAMS)
-    def get_cluster_setup(self, couch_data):
+    def cluster_setup(self, couch_data):
         return couch_data
 
     @couch.endpoint('/_cluster_setup', method='post', data_keys=couch.AllowedKeys.SERVER__CLUSTER_SETUP__DATA)
