@@ -486,14 +486,14 @@ def test_get_node_system_stats(httpserver: test_server.HTTPServer):
     assert response == expected_json
 
 
-# def test_restart_node(httpserver: HTTPServer):
-#   expected_json = {}
-#
-#   httpserver.expect_request("/_node/_local/_restart",  method="POST").respond_with_json(expected_json)
-#   response = couch.server.restart_node(uri_segments={'node_name': '_local'})
-#   assert isinstance(response, CouchError) is False
-#
-#
+def test_restart_node(httpserver: test_server.HTTPServer):
+    expected_json = {}
+
+    httpserver.expect_request("/_node/_local/_restart", method="POST").respond_with_json(expected_json)
+    response = couch.server.restart_node(uri_segments={'node_name': '_local'})
+    assert isinstance(response, couchapy.CouchError) is False
+
+
 # def test_get_server_config(httpserver: HTTPServer):
 #   expected_json = {
 #     "attachments": {
