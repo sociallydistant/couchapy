@@ -3,9 +3,9 @@ import couchapy.error
 
 
 class Server():
-    def __init__(self, **kwargs):
-        self.session = kwargs.get('session', None)
-        self._predefined_segments = {'node_name': '_local'}
+    def __init__(self, parent, **kwargs):
+        self.parent = parent
+        self._predefined_segments = kwargs.get('predefined_segments', {'node_name': '_local'})
 
     @couch.endpoint('/')
     def get_info(self, couch_data):
