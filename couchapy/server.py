@@ -24,7 +24,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_dbs_info', method='post', data_keys=couch.AllowedKeys.SERVER__DBS_INFO__PARAMS)
-    def get_databases(self, couch_data):
+    def databases(self, couch_data):
         return couch_data
 
     @couch.endpoint('/_cluster_setup', query_keys=couch.AllowedKeys.SERVER__CLUSTER_SETUP__PARAMS)

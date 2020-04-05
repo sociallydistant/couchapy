@@ -105,7 +105,7 @@ def test_get_database_names_with_params(httpserver: test_server.HTTPServer):
 def test_get_databases_without_params(httpserver: test_server.HTTPServer):
     expected_json = []
     httpserver.expect_oneshot_request("/_dbs_info", method="POST").respond_with_json(expected_json)
-    response = couch.server.get_databases()
+    response = couch.server.databases()
     assert response == expected_json
 
 
@@ -114,16 +114,16 @@ def test_get_databases_with_params(httpserver: test_server.HTTPServer):
     httpserver.expect_request("/_dbs_info", method="POST").respond_with_json(expected_json)
 
     for k in AllowedKeys.SERVER__DBS_INFO__PARAMS:
-        response = couch.server.get_databases(data={k: ['test']})
+        response = couch.server.databases(data={k: ['test']})
         assert isinstance(response, couchapy.CouchError) is False
 
     with pytest.raises(couchapy.InvalidKeysException):
-        couch.server.get_databases(data={'nonexisting_key': ''})
+        couch.server.databases(data={'nonexisting_key': ''})
 
 
 def test_get_databases_with_400_response_from_couch(httpserver: test_server.HTTPServer):
     httpserver.expect_request("/_dbs_info", method="POST").respond_with_json({}, status=400)
-    response = couch.server.get_databases(data={'keys': []})
+    response = couch.server.databases(data={'keys': []})
     assert isinstance(response, couchapy.CouchError) is True
     assert response.status_code == 400
 
