@@ -1,7 +1,5 @@
 import requests
 
-# from timeloop import Timeloop
-# from datetime import timedelta
 import  couchapy
 import  couchapy.error
 import  couchapy.decorators as couch
@@ -36,10 +34,6 @@ class Session():
         # server configuration such as host and port
         self.parent = parent
 
-    # def __del__(self):
-    #     if (self._keep_alive > 0):
-    #         self._keep_alive_timeloop.stop()
-
     def _create_basic_auth_header(self):
         return requests.auth.HTTPBasicAuth(self._name, self._password)(requests.Request()).headers
 
@@ -73,14 +67,3 @@ class Session():
         Alias for get_session_info()
         """
         return self.get_session_info()
-
-    # def keep_alive(self, isEnabled=False):
-    #     # """
-    #     # Enables or disables keep alive.
-    #     # """
-    #     # if (isEnabled is False):
-    #     #     self._keep_alive_timeloop.stop()
-    #     # elif (isEnabled and self._keep_alive > 0 and self.auth_token is not None):
-    #     #     if (len(self._keep_alive_timeloop.jobs) == 0):
-    #     #         self._keep_alive_timeloop._add_job(func=self.renew_session, interval=timedelta(seconds=self._keep_alive))
-    #     #         self._keep_alive_timeloop.start()
