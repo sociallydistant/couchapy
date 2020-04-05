@@ -545,28 +545,28 @@ def test_get_node_config(httpserver: test_server.HTTPServer):
         assert isinstance(response, couchapy.CouchError) is True
 
 
-# def test_get_config(httpserver: HTTPServer):
-#   expected_json = {
-#     "httpd": {
-#       "allow_jsonp": "false",
-#       "authentication_handlers": "{couch_httpd_auth, cookie_authentication_handler}, {couch_httpd_auth, default_authentication_handler}",
-#       "bind_address": "192.168.0.2",
-#       "max_connections": "2048",
-#       "port": "5984",
-#       "secure_rewrites": "true"
-#     }
-#   }
-#
-#   httpserver.expect_oneshot_request("/_node/_local/_config/httpd",  method="GET").respond_with_json(expected_json)
-#   response = couch.server.get_config(uri_segments={'node_name': '_local', 'key': 'httpd'})
-#   assert response == expected_json
-#
-#   for code in [401]:
-#     httpserver.expect_oneshot_request("/_node/_local/_config/httpd",  method="GET").respond_with_json({}, status=code)
-#     response = couch.server.get_config(uri_segments={'node_name': '_local', 'key': 'httpd'})
-#     assert isinstance(response, CouchError) is True
-#
-#
+def test_get_config(httpserver: test_server.HTTPServer):
+    expected_json = {
+        "httpd": {
+            "allow_jsonp": "false",
+            "authentication_handlers": "{couch_httpd_auth, cookie_authentication_handler}, {couch_httpd_auth, default_authentication_handler}",
+            "bind_address": "192.168.0.2",
+            "max_connections": "2048",
+            "port": "5984",
+            "secure_rewrites": "true"
+        }
+    }
+
+    httpserver.expect_oneshot_request("/_node/_local/_config/httpd", method="GET").respond_with_json(expected_json)
+    response = couch.server.node_setting(uri_segments={'node_name': '_local', 'key': 'httpd'})
+    assert response == expected_json
+
+    for code in [401]:
+        httpserver.expect_oneshot_request("/_node/_local/_config/httpd", method="GET").respond_with_json({}, status=code)
+        response = couch.server.node_setting(uri_segments={'node_name': '_local', 'key': 'httpd'})
+        assert isinstance(response, couchapy.CouchError) is True
+
+
 # def test_set_config(httpserver: HTTPServer):
 #   expected_json = {'data': "5984"}
 #

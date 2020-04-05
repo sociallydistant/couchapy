@@ -111,7 +111,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_node/:node_name:/_config/:key:')
-    def get_config(self, couch_data):
+    def node_setting(self, couch_data):
         """
         Gets the server configuration section or key defined by :key: of the specified node.
         """
