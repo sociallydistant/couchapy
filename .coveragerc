@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = relaxed
-include = */relaxed/*
+source = couchapy
+include = */couchapy/*
 omit =
     */setup.py
