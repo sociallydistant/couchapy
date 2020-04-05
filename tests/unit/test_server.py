@@ -1,8 +1,6 @@
-import pytest
-from pytest_httpserver import HTTPServer
-
-from relaxed import AllowedKeys, CouchDB, CouchError, InvalidKeysException
-from relaxed.server import Server
+import  couchapy
+import  pytest
+import  pytest_httpserver as test_server
 
 
 @pytest.fixture
@@ -12,55 +10,54 @@ def httpserver_listen_address():
 
 @pytest.fixture(autouse=True)
 def setup():
-  """ setup any state specific to the execution of the given module."""
-  global couch
-  couch = CouchDB(username="test", password="test", host="http://127.0.0.1", port=8000)
-  yield
+    """ setup any state specific to the execution of the given module."""
+    global couch
+    couch = couchapy.CouchDB(name="test", password="test", host="http://127.0.0.1", port=8000)
+    yield
 
 
-def test_instanced_class_without_args_has_correct_properties(httpserver: HTTPServer):
-  server = Server()
-  assert server.session is None
-  assert server._predefined_segments == {'node_name': '_local'}
+def test_instanced_class_without_args_has_correct_properties(httpserver: test_server.HTTPServer):
+    server = couch.server
+    assert server.parent is not None
+    assert server._predefined_segments == {'node_name': '_local'}
 
 
-def test_instanced_class_with_args_has_correct_properties(httpserver: HTTPServer):
-  from relaxed.session import Session
-  session = Session()
-  server = Server(session=session)
+def test_instanced_class_with_args_has_correct_properties(httpserver: test_server.HTTPServer):
+    server = couchapy.CouchDB(name="test", password="test", host="http://127.0.0.1", port=8000,
+                              server_kwargs={'predefined_segments': {'node_name': 'test'}}).server
 
-  assert server.session is session
-  assert server._predefined_segments == {'node_name': '_local'}
+    assert 'node_name' in server._predefined_segments and server._predefined_segments['node_name'] == 'test'
 
 
-def test_get_info(httpserver: HTTPServer):
-  expected_json = {
-    "couchdb": "Welcome",
-    "uuid": "85fb71bf700c17267fef77535820e371",
-    "vendor": {
-        "name": "The Apache Software Foundation",
+def test_get_info(httpserver: test_server.HTTPServer):
+    expected_json = {
+        "couchdb": "Welcome",
+        "uuid": "85fb71bf700c17267fef77535820e371",
+        "vendor": {
+            "name": "The Apache Software Foundation",
+            "version": "1.3.1"
+        },
         "version": "1.3.1"
-    },
-    "version": "1.3.1"}
+    }
 
-  httpserver.expect_request("/",  method="GET").respond_with_json(expected_json)
-  response = couch.server.get_info()
+    httpserver.expect_request("/", method="GET").respond_with_json(expected_json)
+    response = couch.server.info()
 
-  assert response == expected_json
+    assert response == expected_json
 
 
-def test_get_server_status(httpserver: HTTPServer):
-  expected_json = {"status": "ok"}
+def test_get_server_status(httpserver: test_server.HTTPServer):
+    expected_json = {"status": "ok"}
 
-  httpserver.expect_oneshot_request("/_up",  method="GET").respond_with_json(expected_json)
-  response = couch.server.get_server_status()
+    httpserver.expect_oneshot_request("/_up", method="GET").respond_with_json(expected_json)
+    response = couch.server.server_status()
 
-  assert response == expected_json
+    assert response == expected_json
 
-  httpserver.expect_oneshot_request("/_up",  method="GET").respond_with_json({}, status=404)
-  response = couch.server.get_server_status()
-  assert isinstance(response, CouchError) is True
-  assert response.status_code == 404
+    httpserver.expect_oneshot_request("/_up", method="GET").respond_with_json({}, status=404)
+    response = couch.server.server_status()
+    assert isinstance(response, couchapy.CouchError) is True
+    assert response.status_code == 404
 
 
 def test_get_active_tasks(httpserver: HTTPServer):
