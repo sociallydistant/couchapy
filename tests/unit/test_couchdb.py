@@ -2,6 +2,9 @@ import  couchapy
 import  pytest
 import  pytest_httpserver as test_server
 
+import  threading
+import  time
+
 
 @pytest.fixture
 def httpserver_listen_address():
@@ -72,12 +75,52 @@ def test_auto_connect_on_initialization(httpserver: test_server.HTTPServer):
         assert isinstance(response, couchapy.error.CouchError) is True
 
 
-def test_auto_session_renewal_works():
-    assert False, \
-        "TEST STUB: Not implemented"
+def test_auto_session_renewal(httpserver: test_server.HTTPServer):
+    authentication_response = {"ok": True, "name": "root", "roles": ["_admin"]}
+    renewal_response = {
+        "info": {
+            "authenticated": "cookie",
+            "authentication_db": "_users",
+            "authentication_handlers": [
+                "cookie",
+                "default"
+            ]
+        },
+        "ok": True,
+        "userCtx": {
+            "name": "root",
+            "roles": [
+                "_admin"
+            ]
+        }
+    }
 
+    httpserver.expect_oneshot_request("/_session", method="POST") \
+              .respond_with_json(authentication_response,
+                                 headers={'Set-Cookie': 'AuthSession=cm9vdDo1MEJCRkYwMjq0LO0ylOIwShrgt8y-UkhI-c6BGw; '
+                                                        'Version=1; Path=/; HttpOnly'})
 
-def test_stopping_session_renewal_exits_gracefully():
-    assert False, \
-        "TEST STUB: Not implemented"
+    httpserver.expect_request("/_session", method="GET") \
+              .respond_with_json(renewal_response,
+                                 headers={'Set-Cookie': 'AuthSession=some_new_auth_token; Version=1; Path=/; HttpOnly'})
+
+    assert couch._auto_renew_worker is None, \
+        "Expected session renewal worker to be None"
+
+    couch.keep_alive = True
+    couch.session_timeout = 0.5
+    couch.start_auto_session()
+
+    assert isinstance(couch._auto_renew_worker, threading.Thread), \
+        "Expected session renewal worker to be an instance of Thread"
+
+    # wait for the thread to renew the session before checking that it was changed
+    time.sleep(0.75)
+    assert couch.session.auth_token == "some_new_auth_token"
+    couch.stop_auto_session()
+
+    # give the thread time to shut down
+    time.sleep(0.2)
+    assert couch._auto_renew_worker is None
+
 
