@@ -90,12 +90,12 @@ def endpoint(*args, **kwargs):
                     ret_val = {'data': ret_val}
             else:
                 result = response.json()
+
                 if isinstance(result, str):
                     result = {'data': result}
-                    result['code'] = response.status_code
                     ret_val = couchapy.error.CouchError(**result)
                 else:
-                    ret_val = couchapy.error.CouchError(error="Unexpected error handling request", reason="Unknown", status_code=0)
+                    ret_val = couchapy.error.CouchError(error=response.reason, reason=response.reason, status_code=response.status_code)
 
             return fn(self, ret_val)
         return wrapper
