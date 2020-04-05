@@ -311,47 +311,6 @@ def test_get_replication_updates(httpserver: test_server.HTTPServer):
         couch.server.replication_updates(params={'nonexisting_key': ''})
 
 
-#
-# def test_get_replicator_docs(httpserver: HTTPServer):
-#   expected_json = {
-#     "docs": [
-#         {
-#             "database": "other/_replicator",
-#             "doc_id": "cdyno-0000001-0000002",
-#             "error_count": 0,
-#             "id": "e327d79214831ca4c11550b4a453c9ba+continuous",
-#             "info": None,
-#             "last_updated": "2017-04-29T05:01:37Z",
-#             "node": "node2@127.0.0.1",
-#             "proxy": None,
-#             "source": "http://myserver.com/foo",
-#             "start_time": "2017-04-29T05:01:37Z",
-#             "state": "running",
-#             "target": "http://adm:*****@localhost:15984/cdyno-0000002/"
-#         }
-#     ],
-#     "offset": 0,
-#     "total_rows": 1
-#   }
-#
-#   httpserver.expect_oneshot_request("/_scheduler/docs/other/_replicator",  method="GET").respond_with_json(expected_json)
-#   response = couch.server.get_replicator_docs(uri_segments={'db': 'other'})
-#   assert response == expected_json
-#
-#   for code in [401]:
-#     httpserver.expect_oneshot_request("/_scheduler/docs/other/_replicator",  method="GET").respond_with_json({}, status=code)
-#     response = couch.server.get_replicator_docs(uri_segments={'db': 'other'})
-#     assert isinstance(response, CouchError) is True
-#
-#   httpserver.expect_request("/_scheduler/docs/other/_replicator",  method="GET").respond_with_json({})
-#   for k in AllowedKeys.SERVER__SCHEDULER_DOCS__PARAMS:
-#     response = couch.server.get_replicator_docs(uri_segments={'db': 'other'}, params={k: ['test']})
-#     assert isinstance(response, CouchError) is False
-#
-#   with pytest.raises(InvalidKeysException):
-#     couch.server.get_replicator_docs(uri_segments={'db': 'other'}, params={'nonexisting_key': ''})
-#
-#
 def test_get_replication_docs(httpserver: test_server.HTTPServer):
     expected_json = {
         "docs": [
@@ -390,6 +349,47 @@ def test_get_replication_docs(httpserver: test_server.HTTPServer):
 
     with pytest.raises(couchapy.InvalidKeysException):
         couch.server.replication_docs(params={'nonexisting_key': ''})
+
+
+def test_get_replicator_docs(httpserver: test_server.HTTPServer):
+    expected_json = {
+        "docs": [
+            {
+                "database": "other/_replicator",
+                "doc_id": "cdyno-0000001-0000002",
+                "error_count": 0,
+                "id": "e327d79214831ca4c11550b4a453c9ba+continuous",
+                "info": None,
+                "last_updated": "2017-04-29T05:01:37Z",
+                "node": "node2@127.0.0.1",
+                "proxy": None,
+                "source": "http://myserver.com/foo",
+                "start_time": "2017-04-29T05:01:37Z",
+                "state": "running",
+                "target": "http://adm:*****@localhost:15984/cdyno-0000002/"
+            }
+        ],
+        "offset": 0,
+        "total_rows": 1
+    }
+
+    httpserver.expect_oneshot_request("/_scheduler/docs/other/_replicator", method="GET").respond_with_json(expected_json)
+    response = couch.server.replicator_docs(uri_segments={'db': 'other'})
+    assert response == expected_json
+
+    for code in [401]:
+        httpserver.expect_oneshot_request("/_scheduler/docs/other/_replicator", method="GET").respond_with_json({}, status=code)
+        response = couch.server.replicator_docs(uri_segments={'db': 'other'})
+        assert isinstance(response, couchapy.CouchError) is True
+
+    httpserver.expect_request("/_scheduler/docs/other/_replicator", method="GET").respond_with_json({})
+    for k in AllowedKeys.SERVER__SCHEDULER_DOCS__PARAMS:
+        response = couch.server.replicator_docs(uri_segments={'db': 'other'}, params={k: ['test']})
+        assert isinstance(response, couchapy.CouchError) is False
+
+    with pytest.raises(couchapy.InvalidKeysException):
+        couch.server.replicator_docs(uri_segments={'db': 'other'}, params={'nonexisting_key': ''})
+
 
 # def test_get_replicator_doc(httpserver: HTTPServer):
 #   expected_json = {

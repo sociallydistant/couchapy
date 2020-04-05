@@ -62,7 +62,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_scheduler/docs/:db:/_replicator', query_keys=couch.AllowedKeys.SERVER__SCHEDULER_DOCS__PARAMS)
-    def get_replicator_docs(self, couch_data):
+    def replicator_docs(self, couch_data):
         """
         Replication documents for a specific replicator database
         """
