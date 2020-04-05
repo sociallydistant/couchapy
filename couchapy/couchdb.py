@@ -29,7 +29,7 @@ class CouchDB():
     :param bool admin_party     Determines whether or not to attempt connections to the CouchDB using Admin Party. (Default: False)
 
     Usage Examples:
-      couchDb = CouchDB([username=<user>[, password=<password>][,<arg=<value>])
+      couchDb = CouchDB([name=<user>[, password=<password>][,<arg=<value>])
     """
 
     def __init__(self, **kwargs):
