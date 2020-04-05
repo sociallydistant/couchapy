@@ -494,57 +494,57 @@ def test_restart_node(httpserver: test_server.HTTPServer):
     assert isinstance(response, couchapy.CouchError) is False
 
 
-# def test_get_server_config(httpserver: HTTPServer):
-#   expected_json = {
-#     "attachments": {
-#         "compressible_types": "text/*, application/javascript, application/json,  application/xml",
-#         "compression_level": "8"
-#     },
-#     "couchdb": {
-#       "users_db_suffix": "_users",
-#       "database_dir": "/var/lib/couchdb",
-#       "delayed_commits": "true",
-#       "max_attachment_chunk_size": "4294967296",
-#       "max_dbs_open": "100",
-#       "os_process_timeout": "5000",
-#       "uri_file": "/var/lib/couchdb/couch.uri",
-#       "util_driver_dir": "/usr/lib64/couchdb/erlang/lib/couch-1.5.0/priv/lib",
-#       "view_index_dir": "/var/lib/couchdb"
-#     },
-#     "chttpd": {
-#       "backlog": "512",
-#       "bind_address": "0.0.0.0",
-#       "docroot": "./share/www",
-#       "port": "5984",
-#       "require_valid_user": "false",
-#       "socket_options": "[{sndbuf, 262144}, {nodelay, true}]",
-#       "server_options": "[{recbuf, undefined}]"
-#     },
-#     "httpd": {
-#       "allow_jsonp": "false",
-#       "authentication_handlers": "{couch_httpd_auth, cookie_authentication_handler}, {couch_httpd_auth, default_authentication_handler}",
-#       "bind_address": "192.168.0.2",
-#       "max_connections": "2048",
-#       "port": "5984",
-#       "secure_rewrites": "true"
-#     },
-#     "log": {"writer": "file", "file": "/var/log/couchdb/couch.log", "include_sasl": "true", "level": "info"},
-#     "query_server_config": {"reduce_limit": "true"},
-#     "replicator": {"max_http_pipeline_size": "10", "max_http_sessions": "10"},
-#     "stats": {"rate": "1000", "samples": "[0, 60, 300, 900]"},
-#     "uuids": {"algorithm": "utc_random"}
-#   }
-#
-#   httpserver.expect_oneshot_request("/_node/_local/_config",  method="GET").respond_with_json(expected_json)
-#   response = couch.server.get_server_config(uri_segments={'node_name': '_local'})
-#   assert response == expected_json
-#
-#   for code in [401]:
-#     httpserver.expect_oneshot_request("/_node/_local/_config",  method="GET").respond_with_json({}, status=code)
-#     response = couch.server.get_server_config(uri_segments={'node_name': '_local'})
-#     assert isinstance(response, CouchError) is True
-#
-#
+def test_get_node_config(httpserver: test_server.HTTPServer):
+    expected_json = {
+        "attachments": {
+            "compressible_types": "text/*, application/javascript, application/json,  application/xml",
+            "compression_level": "8"
+        },
+        "couchdb": {
+            "users_db_suffix": "_users",
+            "database_dir": "/var/lib/couchdb",
+            "delayed_commits": "true",
+            "max_attachment_chunk_size": "4294967296",
+            "max_dbs_open": "100",
+            "os_process_timeout": "5000",
+            "uri_file": "/var/lib/couchdb/couch.uri",
+            "util_driver_dir": "/usr/lib64/couchdb/erlang/lib/couch-1.5.0/priv/lib",
+            "view_index_dir": "/var/lib/couchdb"
+        },
+        "chttpd": {
+            "backlog": "512",
+            "bind_address": "0.0.0.0",
+            "docroot": "./share/www",
+            "port": "5984",
+            "require_valid_user": "false",
+            "socket_options": "[{sndbuf, 262144}, {nodelay, true}]",
+            "server_options": "[{recbuf, undefined}]"
+        },
+        "httpd": {
+            "allow_jsonp": "false",
+            "authentication_handlers": "{couch_httpd_auth, cookie_authentication_handler}, {couch_httpd_auth, default_authentication_handler}",
+            "bind_address": "192.168.0.2",
+            "max_connections": "2048",
+            "port": "5984",
+            "secure_rewrites": "true"
+        },
+        "log": {"writer": "file", "file": "/var/log/couchdb/couch.log", "include_sasl": "true", "level": "info"},
+        "query_server_config": {"reduce_limit": "true"},
+        "replicator": {"max_http_pipeline_size": "10", "max_http_sessions": "10"},
+        "stats": {"rate": "1000", "samples": "[0, 60, 300, 900]"},
+        "uuids": {"algorithm": "utc_random"}
+    }
+
+    httpserver.expect_oneshot_request("/_node/_local/_config", method="GET").respond_with_json(expected_json)
+    response = couch.server.node_config(uri_segments={'node_name': '_local'})
+    assert response == expected_json
+
+    for code in [401]:
+        httpserver.expect_oneshot_request("/_node/_local/_config", method="GET").respond_with_json({}, status=code)
+        response = couch.server.node_config(uri_segments={'node_name': '_local'})
+        assert isinstance(response, couchapy.CouchError) is True
+
+
 # def test_get_config(httpserver: HTTPServer):
 #   expected_json = {
 #     "httpd": {

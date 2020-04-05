@@ -104,7 +104,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_node/:node_name:/_config')
-    def get_server_config(self, couch_data):
+    def node_config(self, couch_data):
         """
         Gets the entire server configuration of the specified node.
         """
