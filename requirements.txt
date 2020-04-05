@@ -1,0 +1,5 @@
+requests
+pytest<5.4.0
+pytest-cov
+pytest-sugar
+pytest_httpserver
