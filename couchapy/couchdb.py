@@ -58,7 +58,7 @@ class CouchDB():
         self._admin_party = kwargs.get('admin_party', False)  # TODO: implement admin party
 
         self.session = couchapy.session.Session(self, **kwargs)
-        # self.server = couchapy.server.Server(session=self.session)
+        self.server = couchapy.server.Server(self, **kwargs.get('server_kwargs', {}))
         # self.db = couchapy.database.Database(session=self.session, **kwargs)
         # self.user = User(session=self.session, db=self.db)
 
