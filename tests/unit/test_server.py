@@ -205,112 +205,112 @@ def test_get_membership(httpserver: test_server.HTTPServer):
     assert response == expected_json
 
 
-# def test_replicate(httpserver: HTTPServer):
-#   expected_json = {
-#     "history": [
-#         {
-#             "doc_write_failures": 0,
-#             "docs_read": 10,
-#             "docs_written": 10,
-#             "end_last_seq": 28,
-#             "end_time": "Sun, 11 Aug 2013 20:38:50 GMT",
-#             "missing_checked": 10,
-#             "missing_found": 10,
-#             "recorded_seq": 28,
-#             "session_id": "142a35854a08e205c47174d91b1f9628",
-#             "start_last_seq": 1,
-#             "start_time": "Sun, 11 Aug 2013 20:38:50 GMT"
-#         },
-#         {
-#             "doc_write_failures": 0,
-#             "docs_read": 1,
-#             "docs_written": 1,
-#             "end_last_seq": 1,
-#             "end_time": "Sat, 10 Aug 2013 15:41:54 GMT",
-#             "missing_checked": 1,
-#             "missing_found": 1,
-#             "recorded_seq": 1,
-#             "session_id": "6314f35c51de3ac408af79d6ee0c1a09",
-#             "start_last_seq": 0,
-#             "start_time": "Sat, 10 Aug 2013 15:41:54 GMT"
-#         }
-#     ],
-#     "ok": True,
-#     "replication_id_version": 3,
-#     "session_id": "142a35854a08e205c47174d91b1f9628",
-#     "source_last_seq": 28
-#   }
-#
-#   httpserver.expect_oneshot_request("/_replicate",  method="POST").respond_with_json(expected_json)
-#   response = couch.server.replicate()
-#   assert response == expected_json
-#
-#   for code in [202]:
-#     httpserver.expect_oneshot_request("/_replicate",  method="POST").respond_with_json({}, status=code)
-#     response = couch.server.replicate()
-#     assert isinstance(response, CouchError) is False
-#
-#   for code in [400, 401, 404, 500]:
-#     httpserver.expect_oneshot_request("/_replicate",  method="POST").respond_with_json({}, status=code)
-#     response = couch.server.replicate()
-#     assert isinstance(response, CouchError) is True
-#
-#   httpserver.expect_request("/_replicate",  method="POST").respond_with_json({})
-#   for k in AllowedKeys.SERVER__REPLICATE__DATA:
-#     response = couch.server.replicate(data={k: ['test']})
-#     assert isinstance(response, CouchError) is False
-#
-#   with pytest.raises(InvalidKeysException):
-#     couch.server.replicate(data={'nonexisting_key': ''})
-#
-#
-# def test_get_replication_updates(httpserver: HTTPServer):
-#   expected_json = {
-#     "jobs": [
-#         {
-#             "database": "_replicator",
-#             "doc_id": "cdyno-0000001-0000003",
-#             "history": [
-#                 {
-#                     "timestamp": "2017-04-29T05:01:37Z",
-#                     "type": "started"
-#                 },
-#                 {
-#                     "timestamp": "2017-04-29T05:01:37Z",
-#                     "type": "added"
-#                 }
-#             ],
-#             "id": "8f5b1bd0be6f9166ccfd36fc8be8fc22+continuous",
-#             "node": "node1@127.0.0.1",
-#             "pid": "<0.1850.0>",
-#             "source": "http://myserver.com/foo",
-#             "start_time": "2017-04-29T05:01:37Z",
-#             "target": "http://adm:*****@localhost:15984/cdyno-0000003/",
-#             "user": None
-#         }
-#     ],
-#     "offset": 0,
-#     "total_rows": 1
-#   }
-#
-#   httpserver.expect_oneshot_request("/_scheduler/jobs",  method="GET").respond_with_json(expected_json)
-#   response = couch.server.get_replication_updates()
-#   assert response == expected_json
-#
-#   for code in [401]:
-#     httpserver.expect_oneshot_request("/_scheduler/jobs",  method="GET").respond_with_json({}, status=code)
-#     response = couch.server.get_replication_updates()
-#     assert isinstance(response, CouchError) is True
-#
-#   httpserver.expect_request("/_scheduler/jobs",  method="GET").respond_with_json({})
-#   for k in AllowedKeys.SERVER__SCHEDULER_JOBS__PARAMS:
-#     response = couch.server.get_replication_updates(params={k: ['test']})
-#     assert isinstance(response, CouchError) is False
-#
-#   with pytest.raises(InvalidKeysException):
-#     couch.server.get_replication_updates(params={'nonexisting_key': ''})
-#
-#
+def test_replicate(httpserver: test_server.HTTPServer):
+    expected_json = {
+        "history": [
+            {
+                "doc_write_failures": 0,
+                "docs_read": 10,
+                "docs_written": 10,
+                "end_last_seq": 28,
+                "end_time": "Sun, 11 Aug 2013 20:38:50 GMT",
+                "missing_checked": 10,
+                "missing_found": 10,
+                "recorded_seq": 28,
+                "session_id": "142a35854a08e205c47174d91b1f9628",
+                "start_last_seq": 1,
+                "start_time": "Sun, 11 Aug 2013 20:38:50 GMT"
+            },
+            {
+                "doc_write_failures": 0,
+                "docs_read": 1,
+                "docs_written": 1,
+                "end_last_seq": 1,
+                "end_time": "Sat, 10 Aug 2013 15:41:54 GMT",
+                "missing_checked": 1,
+                "missing_found": 1,
+                "recorded_seq": 1,
+                "session_id": "6314f35c51de3ac408af79d6ee0c1a09",
+                "start_last_seq": 0,
+                "start_time": "Sat, 10 Aug 2013 15:41:54 GMT"
+            }
+        ],
+        "ok": True,
+        "replication_id_version": 3,
+        "session_id": "142a35854a08e205c47174d91b1f9628",
+        "source_last_seq": 28
+    }
+
+    httpserver.expect_oneshot_request("/_replicate", method="POST").respond_with_json(expected_json)
+    response = couch.server.replicate()
+    assert response == expected_json
+
+    for code in [202]:
+        httpserver.expect_oneshot_request("/_replicate", method="POST").respond_with_json({}, status=code)
+        response = couch.server.replicate()
+        assert isinstance(response, couchapy.CouchError) is False
+
+    for code in [400, 401, 404, 500]:
+        httpserver.expect_oneshot_request("/_replicate", method="POST").respond_with_json({}, status=code)
+        response = couch.server.replicate()
+        assert isinstance(response, couchapy.CouchError) is True
+
+    httpserver.expect_request("/_replicate", method="POST").respond_with_json({})
+    for k in AllowedKeys.SERVER__REPLICATE__DATA:
+        response = couch.server.replicate(data={k: ['test']})
+        assert isinstance(response, couchapy.CouchError) is False
+
+    with pytest.raises(couchapy.InvalidKeysException):
+        couch.server.replicate(data={'nonexisting_key': ''})
+
+
+def test_get_replication_updates(httpserver: test_server.HTTPServer):
+    expected_json = {
+        "jobs": [
+            {
+                "database": "_replicator",
+                "doc_id": "cdyno-0000001-0000003",
+                "history": [
+                    {
+                        "timestamp": "2017-04-29T05:01:37Z",
+                        "type": "started"
+                    },
+                    {
+                        "timestamp": "2017-04-29T05:01:37Z",
+                        "type": "added"
+                    }
+                ],
+                "id": "8f5b1bd0be6f9166ccfd36fc8be8fc22+continuous",
+                "node": "node1@127.0.0.1",
+                "pid": "<0.1850.0>",
+                "source": "http://myserver.com/foo",
+                "start_time": "2017-04-29T05:01:37Z",
+                "target": "http://adm:*****@localhost:15984/cdyno-0000003/",
+                "user": None
+            }
+        ],
+        "offset": 0,
+        "total_rows": 1
+    }
+
+    httpserver.expect_oneshot_request("/_scheduler/jobs", method="GET").respond_with_json(expected_json)
+    response = couch.server.replication_updates()
+    assert response == expected_json
+
+    for code in [401]:
+        httpserver.expect_oneshot_request("/_scheduler/jobs", method="GET").respond_with_json({}, status=code)
+        response = couch.server.replication_updates()
+        assert isinstance(response, couchapy.CouchError) is True
+
+    httpserver.expect_request("/_scheduler/jobs", method="GET").respond_with_json({})
+    for k in AllowedKeys.SERVER__SCHEDULER_JOBS__PARAMS:
+        response = couch.server.replication_updates(params={k: ['test']})
+        assert isinstance(response, couchapy.CouchError) is False
+
+    with pytest.raises(couchapy.InvalidKeysException):
+        couch.server.replication_updates(params={'nonexisting_key': ''})
+
+
 # def test_get_replication_docs(httpserver: HTTPServer):
 #   expected_json = {
 #     "docs": [

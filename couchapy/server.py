@@ -48,7 +48,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_scheduler/jobs', query_keys=couch.AllowedKeys.SERVER__SCHEDULER_JOBS__PARAMS)
-    def get_replication_updates(self, couch_data):
+    def replication_updates(self, couch_data):
         """
         Retrieves the status of replication jobs that are currently active.
         """
