@@ -475,17 +475,17 @@ def test_get_node_server_stat(httpserver: test_server.HTTPServer):
     assert response == expected_json
 
 
-# def test_get_node_system_stats(httpserver: HTTPServer):
-#   expected_json = {"uptime": 259, "memory": 1000}
-#
-#   httpserver.expect_request("/_node/_local/_system",  method="GET").respond_with_json(expected_json)
-#   response = couch.server.get_node_system_stats(uri_segments={'node_name': '_local'})
-#   assert response == expected_json
-#
-#   response = couch.server.get_node_system_stats()
-#   assert response == expected_json
-#
-#
+def test_get_node_system_stats(httpserver: test_server.HTTPServer):
+    expected_json = {"uptime": 259, "memory": 1000}
+
+    httpserver.expect_request("/_node/_local/_system", method="GET").respond_with_json(expected_json)
+    response = couch.server.node_system_stats(uri_segments={'node_name': '_local'})
+    assert response == expected_json
+
+    response = couch.server.node_system_stats()
+    assert response == expected_json
+
+
 # def test_restart_node(httpserver: HTTPServer):
 #   expected_json = {}
 #

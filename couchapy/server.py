@@ -90,7 +90,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_node/:node_name:/_system')
-    def get_node_system_stats(self, couch_data):
+    def node_system_stats(self, couch_data):
         """
         Get system statistics for the running server with name :node_name:
         """
