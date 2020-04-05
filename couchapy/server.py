@@ -16,7 +16,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_active_tasks')
-    def get_active_tasks(self, couch_data):
+    def active_tasks(self, couch_data):
         return couch_data
 
     @couch.endpoint('/_all_dbs', query_keys=couch.AllowedKeys.SERVER__ALL_DBS__PARAMS)
