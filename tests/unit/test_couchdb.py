@@ -15,7 +15,7 @@ def httpserver_listen_address():
 def setup():
     """ setup any state specific to the execution of the given module."""
     global couch
-    couch = couchapy.CouchDB(username="test", password="test", host="http://127.0.0.1", port=8000)
+    couch = couchapy.CouchDB(name="test", password="test", host="http://127.0.0.1", port=8000)
     yield
 
 
@@ -90,21 +90,21 @@ def test_auto_connect_on_initialization(httpserver: test_server.HTTPServer):
                                  headers={'Set-Cookie': 'AuthSession=cm9vdDo1MEJCRkYwMjq0LO0ylOIwShrgt8y-UkhI-c6BGw; '
                                                         'Version=1; Path=/; HttpOnly'})
 
-    couch = couchapy.CouchDB(username="test", password="test", host="http://127.0.0.1", port=8000, auto_connect=True)
+    couch = couchapy.CouchDB(name="test", password="test", host="http://127.0.0.1", port=8000, auto_connect=True)
     assert couch.session.auth_token == 'cm9vdDo1MEJCRkYwMjq0LO0ylOIwShrgt8y-UkhI-c6BGw', \
         "Expected session auth token to match, but it didn't"
 
-    couch = couchapy.CouchDB(username="test", password="test", host="http://127.0.0.1", port=8000, auto_connect=False)
+    couch = couchapy.CouchDB(name="test", password="test", host="http://127.0.0.1", port=8000, auto_connect=False)
     assert couch.session.auth_token is None, \
         "Expected auth token to be None when auto_connect is False"
 
-    couch = couchapy.CouchDB(username="test", password="test", host="http://127.0.0.1", port=8000)
+    couch = couchapy.CouchDB(name="test", password="test", host="http://127.0.0.1", port=8000)
     assert couch.session.auth_token is None, \
         "Expected session auth token to be None when auto_connect is not provided"
 
     for code in [401]:
         httpserver.expect_oneshot_request("/_session", method="POST").respond_with_json({}, status=code)
-        couch = couchapy.CouchDB(username="test", password="test", host="http://127.0.0.1", port=8000)
+        couch = couchapy.CouchDB(name="test", password="test", host="http://127.0.0.1", port=8000)
         response = couch.session.authenticate()
         assert isinstance(response, couchapy.error.CouchError) is True
 
