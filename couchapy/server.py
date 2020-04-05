@@ -12,7 +12,7 @@ class Server():
         return couch_data
 
     @couch.endpoint('/_up')
-    def get_server_status(self, couch_data):
+    def server_status(self, couch_data):
         return couch_data
 
     @couch.endpoint('/_active_tasks')
