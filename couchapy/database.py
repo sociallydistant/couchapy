@@ -13,14 +13,21 @@ class Database():
         return couch_data
 
     @couch.endpoint('/:db:', method='head')
-    def exists(self, couch_data):
+    def exists(self, couch_data, **kwargs):
         """
         Convenience method
 
         :returns CouchError if an error occured accessing the couch api
         :returns bool True if the database exists, otherwise false.
         """
-        return False if isinstance(couch_data, couchapy.error.CouchError) else True
+        status_code = kwargs.get("status_code", None)
+
+        if status_code != 200:
+            return False
+        elif isinstance(couch_data, couchapy.error.CouchError):
+            return False
+        else:
+            return True
 
     @couch.endpoint('/:db:')
     def get(self, couch_data):
