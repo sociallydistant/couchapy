@@ -17,6 +17,20 @@ def setup():
     yield
 
 
+def test_database_exists(httpserver: test_server.HTTPServer):
+    httpserver.expect_request("/_local", method="HEAD").respond_with_json({}, headers={'ETag': 'revidhere'}, status=200)
+
+    # simulate a 404
+    httpserver.expect_request("/doesnotexist", method="HEAD").respond_with_json({}, headers={'ETag': 'revidhere'}, status=404)
+    response = couch.db.exists(uri_segments={'db': '_local'})
+    assert response is True
+
+    response = couch.db.exists(uri_segments={'db': 'doesnotexist'})
+    assert response is False
+
+    response = couch.db.exists(uri_segments={'db': 'generateinternalservererror'})
+    assert response is False
+
 def test_get_doc_info(httpserver: test_server.HTTPServer):
     expected = 'revidhere'
 

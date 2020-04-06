@@ -70,8 +70,10 @@ def endpoint(*args, **kwargs):
                                           cookies=cookies,
                                           params=kwargs.get('params', None),
                                           json=kwargs.get('data'))
-
-                return fn(self, response.headers.get('ETag'))
+                return fn(self,
+                          response.headers.get('ETag'),
+                          response_headers=response.headers,
+                          status_code=response.status_code)
             else:
                 response = request_action(uri,
                                           headers=self.parent._headers,
