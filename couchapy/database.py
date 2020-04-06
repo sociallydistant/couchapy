@@ -63,7 +63,7 @@ class Database():
         return couch_data
 
     @couch.endpoint('/:db:/:docid:', method='head', query_keys=couch.AllowedKeys.DATABASE__DOCUMENT__PARAMS)
-    def get_doc_info(self, couch_data):
+    def get_doc_info(self, couch_data, **kwargs):
         return couch_data
 
     @couch.endpoint('/:db:/:docid:', query_keys=couch.AllowedKeys.DATABASE__DOCUMENT__PARAMS)
