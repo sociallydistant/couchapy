@@ -12,7 +12,7 @@ scripts/install_dev_env.sh
 ```
 
 Expected output
-![Automated setup expected output](docs/images/automated-setup.png)
+![Automated setup expected output](images/automated-setup.png)
 
 ## Manually
 Manual configuration of the development environment involves:
