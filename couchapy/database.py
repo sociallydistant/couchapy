@@ -9,8 +9,8 @@ class Database():
         self._predefined_segments = kwargs.get('predefined_segments', {'db': self._db})
 
     @couch.endpoint('/:db:', method='head')
-    def headers(self, couch_data):
-        return couch_data
+    def headers(self, couch_data, **kwargs):
+        return kwargs.get("response_headers", None)
 
     @couch.endpoint('/:db:', method='head')
     def exists(self, couch_data, **kwargs):

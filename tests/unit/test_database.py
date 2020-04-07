@@ -17,6 +17,20 @@ def setup():
     yield
 
 
+def test_headers(httpserver: test_server.HTTPServer):
+    expected = {
+        "Cache-Control": "must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Mon, 12 Aug 2013 01:27:41 GMT",
+        "Server": "CouchDB (Erlang/OTP)",
+        "Content-Length": "2"
+    }
+
+    httpserver.expect_request("/_local", method="HEAD").respond_with_json({}, headers=expected, status=404)
+    response = couch.db.headers(uri_segments={'db': '_local'})
+    assert response == expected
+
+
 def test_database_exists(httpserver: test_server.HTTPServer):
     httpserver.expect_request("/_local", method="HEAD").respond_with_json({}, headers={'ETag': 'revidhere'}, status=200)
 
