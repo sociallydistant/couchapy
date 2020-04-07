@@ -17,6 +17,17 @@ def setup():
     yield
 
 
+def test_initializer(httpserver: test_server.HTTPServer):
+    assert couch.db.parent == couch
+    assert couch.db._db == '_local'
+    assert couch.db._predefined_segments == {"db": "_local"}
+
+    couch_without_db_args = couchapy.CouchDB()
+    assert couch_without_db_args.db.parent == couch_without_db_args
+    assert couch_without_db_args.db._db == '_global_changes'
+    assert couch_without_db_args.db._predefined_segments == {"db": "_global_changes"}
+
+
 def test_headers(httpserver: test_server.HTTPServer):
     expected = {
         "Cache-Control": "must-revalidate",
