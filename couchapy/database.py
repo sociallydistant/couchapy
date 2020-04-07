@@ -30,7 +30,7 @@ class Database():
             return True
 
     @couch.endpoint('/:db:')
-    def get(self, couch_data):
+    def info(self, couch_data):
         return couch_data
 
     @couch.endpoint('/:db:', method='put', query_keys=couch.AllowedKeys.DATABASE__DB__CREATE_PARAMS)

@@ -56,6 +56,36 @@ def test_database_exists(httpserver: test_server.HTTPServer):
     response = couch.db.exists(uri_segments={'db': 'generateinternalservererror'})
     assert response is False
 
+
+def test_database_info(httpserver: test_server.HTTPServer):
+    expected = {
+        "cluster": {
+            "n": 3,
+            "q": 8,
+            "r": 2,
+            "w": 2
+        },
+        "compact_running": False,
+        "db_name": "receipts",
+        "disk_format_version": 6,
+        "doc_count": 6146,
+        "doc_del_count": 64637,
+        "instance_start_time": "0",
+        "props": {},
+        "purge_seq": 0,
+        "sizes": {
+            "active": 65031503,
+            "external": 66982448,
+            "file": 137433211
+        },
+        "update_seq": "292786-g1AAAAF..."
+    }
+
+    httpserver.expect_request("/_local").respond_with_json(expected)
+    response = couch.db.info(uri_segments={'db': '_local'})
+    assert response == expected
+
+
 def test_get_doc_info(httpserver: test_server.HTTPServer):
     expected = 'revidhere'
 
