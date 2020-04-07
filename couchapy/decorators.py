@@ -91,6 +91,8 @@ def endpoint(*args, **kwargs):
                 if isinstance(result, str):
                     result = {'data': result}
                     ret_val = couchapy.error.CouchError(**result)
+                elif isinstance(result, dict) and 'error' in result:
+                    ret_val = couchapy.error.CouchError(error=result['error'], reason=result['reason'], status_code=response.status_code)
                 else:
                     ret_val = couchapy.error.CouchError(error=response.reason, reason=response.reason, status_code=response.status_code)
 
