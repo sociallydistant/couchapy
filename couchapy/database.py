@@ -12,6 +12,9 @@ class Database():
 
     @couch.endpoint('/:db:', method='head')
     def headers(self, couch_data, **kwargs):
+        """
+        See https://docs.couchdb.org/en/stable/api/database/common.html#db
+        """
         return kwargs.get("response_headers", None)
 
     @couch.endpoint('/:db:', method='head')
@@ -21,6 +24,8 @@ class Database():
 
         :returns CouchError if an error occured accessing the couch api
         :returns bool True if the database exists, otherwise false.
+
+        See https://docs.couchdb.org/en/stable/api/database/common.html#db
         """
         status_code = kwargs.get("status_code", None)
 
@@ -33,14 +38,9 @@ class Database():
 
     @couch.endpoint('/:db:')
     def info(self, couch_data):
-        return couch_data
-
-    @couch.endpoint('/:db:', method='put', query_keys=couch.AllowedKeys.DATABASE__DB__CREATE_PARAMS)
-    def create(self, couch_data):
-        return couch_data
-
-    @couch.endpoint('/:db:', method='delete')
-    def delete(self, couch_data):
+        """
+        See https://docs.couchdb.org/en/stable/api/database/common.html#get--db
+        """
         return couch_data
 
     @couch.endpoint('/:db:', method='post', query_keys=couch.AllowedKeys.DATABASE__DB__SAVE__PARAMS)

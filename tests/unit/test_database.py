@@ -86,23 +86,7 @@ def test_database_info(httpserver: test_server.HTTPServer):
     assert response == expected
 
 
-def test_database_create(httpserver: test_server.HTTPServer):
-    expected_db_does_not_exist = {"ok": True}
-    expected_db_exists = {
-        "error": "file_exists",
-        "reason": "The database could not be created, the file already exists."
-    }
 
-    httpserver.expect_oneshot_request("/somedb").respond_with_json(expected_db_does_not_exist)
-    response = couch.db.create(uri_segments={'db': 'somedb'})
-    assert response == expected_db_does_not_exist
-
-    httpserver.expect_oneshot_request("/somedb").respond_with_json(expected_db_exists, status=412)
-    response = couch.db.create(uri_segments={'db': 'somedb'})
-    assert isinstance(response, couchapy.CouchError)
-    assert response.error == expected_db_exists['error']
-    assert response.reason == expected_db_exists['reason']
-    assert response.status_code == 412
 
 
 def test_get_doc_info(httpserver: test_server.HTTPServer):
