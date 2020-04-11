@@ -44,11 +44,13 @@ class Database():
         return couch_data
 
     @couch.endpoint('/:db:', method='post', query_keys=couch.AllowedKeys.DATABASE__DB__SAVE__PARAMS)
-    def save_doc(self, couch_data):
+    def save(self, couch_data):
         """
         Saves a document to the specified database
 
         :returns CouchError if an error occured accessing the couch api
+
+        See https://docs.couchdb.org/en/stable/api/database/common.html#post--db
         """
         return couch_data
 
@@ -58,12 +60,20 @@ class Database():
         Force a manual request to commit documents created, updated, or deleted using CouchDB batch mode to persistent
         storage.
 
-        See: http://docs.couchdb.org/en/stable/api/database/common.html#batch-mode-writes
+        Note: Changed in CouchDB 3.0.0: Deprecated; endpoint is a no-op.
 
         :returns CouchError if an error occured accessing the couch api
+
+        See: https://docs.couchdb.org/en/stable/api/database/compact.html#db-ensure-full-commit
         """
         return couch_data
 
+    @couch.endpoint('/:db:/_compact', method='post')
+    def compact(self, couch_data):
+        """
+        See https://docs.couchdb.org/en/stable/api/database/compact.html#db-compact
+        """
+        return couch_data
     @couch.endpoint('/:db:/:docid:', method='head', query_keys=couch.AllowedKeys.DATABASE__DOCUMENT__PARAMS)
     def get_doc_info(self, couch_data, **kwargs):
         return couch_data
@@ -273,9 +283,7 @@ class Database():
     def get_filtered_changes(self, couch_data):
         return couch_data
 
-    @couch.endpoint('/:db:/_compact', method='post')
-    def compact(self, couch_data):
-        return couch_data
+
 
     @couch.endpoint('/:db:/_compact/:ddoc:', method='post')
     def compact_design_doc(self, couch_data):

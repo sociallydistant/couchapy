@@ -86,7 +86,41 @@ def test_database_info(httpserver: test_server.HTTPServer):
     assert response == expected
 
 
+def test_save_new_doc(httpserver: test_server.HTTPServer):
+    expected = {
+        "id": "ab39fe0993049b84cfa81acd6ebad09d",
+        "ok": True,
+        "rev": "1-9c65296036141e575d32ba9c034dd3ee"
+    }
 
+    request_data = {
+        "servings": 4,
+        "subtitle": "Delicious with fresh bread",
+        "title": "Fish Stew"
+    }
+
+    httpserver.expect_request("/_local", method="POST").respond_with_json(expected)
+    response = couch.db.save(uri_segments={'db': '_local'}, data=request_data)
+    assert response == expected
+
+
+def test_flush(httpserver: test_server.HTTPServer):
+    expected = {
+        "instance_start_time": "0",
+        "ok": True
+    }
+
+    httpserver.expect_request("/_local/_ensure_full_commit", method="POST").respond_with_json(expected)
+    response = couch.db.flush(uri_segments={'db': '_local'})
+    assert response == expected
+
+
+def test_compact(httpserver: test_server.HTTPServer):
+    expected = {"ok": True}
+
+    httpserver.expect_request("/_local/_compact", method="POST").respond_with_json(expected)
+    response = couch.db.compact(uri_segments={'db': '_local'})
+    assert response == expected
 
 
 def test_get_doc_info(httpserver: test_server.HTTPServer):
