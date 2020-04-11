@@ -1,5 +1,6 @@
 import  couchapy.decorators as couch
 import  couchapy.error
+import  couchapy.private.revisions as _revs
 
 
 class Database():
@@ -7,6 +8,7 @@ class Database():
         self.parent = parent
         self._db = kwargs.get('db', '_global_changes')
         self._predefined_segments = kwargs.get('predefined_segments', {'db': self._db})
+        self.revs = _revs._Revisions(self)
 
     @couch.endpoint('/:db:', method='head')
     def headers(self, couch_data, **kwargs):
@@ -301,20 +303,4 @@ class Database():
 
     @couch.endpoint('/:db:/_purged_infos_limit', method='put')
     def set_purge_tracking_limit(self, couch_data):
-        return couch_data
-
-    @couch.endpoint('/:db:/_missing_revs', method='post')
-    def check_missing_revs(self, couch_data):
-        return couch_data
-
-    @couch.endpoint('/:db:/_revs_diff', method='post')
-    def get_revs_diff(self, couch_data):
-        return couch_data
-
-    @couch.endpoint('/:db:/_revs_limit')
-    def get_revs_limit(self, couch_data):
-        return couch_data
-
-    @couch.endpoint('/:db:/_revs_limit', method='put')
-    def set_revs_limit(self, couch_data):
         return couch_data
