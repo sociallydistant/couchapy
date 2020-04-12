@@ -177,12 +177,3 @@ def test_compact(httpserver: test_server.HTTPServer):
     httpserver.expect_request("/_local/_compact", method="POST").respond_with_json(expected)
     response = couch.db.compact(uri_segments={'db': '_local'})
     assert response == expected
-
-
-def test_get_doc_info(httpserver: test_server.HTTPServer):
-    expected = 'revidhere'
-
-    httpserver.expect_request("/_local/testdoc", method="HEAD").respond_with_json({}, headers={'ETag': 'revidhere'})
-    response = couch.db.get_doc_info(uri_segments={'docid': 'testdoc'})
-
-    assert response == expected
