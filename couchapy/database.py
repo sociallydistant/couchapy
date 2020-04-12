@@ -1,6 +1,7 @@
 import  couchapy.decorators as couch
 import  couchapy.error
 import  couchapy.private.design as _design
+import  couchapy.private.local as _local
 import  couchapy.private.revisions as _revs
 import  couchapy.private.security as _security
 
@@ -13,6 +14,7 @@ class Database():
         self.revs = _revs._Revisions(self)
         self.security = _security._Security(self)
         self.design = _design._DesignDocument(self)
+        self.local = _local._LocalDocuments(self)
 
     @couch.endpoint('/:db:', method='head')
     def headers(self, couch_data, **kwargs):
@@ -151,42 +153,8 @@ class Database():
     def filter_docs(self, couch_data):
         return couch_data
 
-    @couch.endpoint('/:db:/_all_docs', query_keys=couch.AllowedKeys.DATABASE__LOCAL_DOCS__PARAMS)
-    def get_local_docs(self, couch_data):
-        return couch_data
-
-    @couch.endpoint('/:db:/_all_docs', method='post', data_keys=couch.AllowedKeys.DATABASE__LOCAL_DOCS__DATA)
-    def get_local_docs_by_key(self, couch_data):
-        return couch_data
-
-    @couch.endpoint('/:db:/_local/:docid:', query_keys=couch.AllowedKeys.DATABASE__DOCUMENT__PARAMS)
-    def get_local_doc(self, couch_data):
-        return couch_data
-
-    @couch.endpoint('/:db:/_local/:docid:', method='put', query_keys=couch.AllowedKeys.DATABASE__DOCUMENT__NAMED_DOC__PARAMS)
-    def save_local_named_doc(self, couch_data):
-        return couch_data
-
-    @couch.endpoint('/:db:/_local/:docid:', method='delete', query_keys=couch.AllowedKeys.DATABASE__DOCUMENT__DELETE__PARAMS)
-    def delete_local_doc(self, couch_data):
-        return couch_data
-
-    # TODO: implement custom verb handling in endpoint decorator
-    # TODO: CouchDB COPY command uses custom headers to send data...need to implement a way to handle this too
-    # see https://requests.readthedocs.io/en/master/user/advanced/
-    # @couch.endpoint('/:db:/_local/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
-    # def copy_local_doc(self, couch_data):
-    #   return couch_data
-
-
     @couch.endpoint('/:db:/_all_docs/queries', method='post', data_keys=couch.AllowedKeys.DATABASE__ALL_DOCS_QUERIES__DATA)
     def filter_docs_with_queries(self, couch_data):
-        return couch_data
-
-
-
-    @couch.endpoint('/:db:/_local_docs/queries', method='post', data_keys=couch.AllowedKeys.DATABASE__LOCAL_DOCS_QUERIES__DATA)
-    def filter_local_docs_with_queries(self, couch_data):
         return couch_data
 
     @couch.endpoint('/:db:/_bulk_get', method='post',

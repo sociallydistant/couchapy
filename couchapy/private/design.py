@@ -87,6 +87,6 @@ class _DesignDocument():
     # TODO: implement custom verb handling in endpoint decorator
     # TODO: CouchDB COPY command uses custom headers to send data...need to implement a way to handle this too
     # see https://requests.readthedocs.io/en/master/user/advanced/
-    @couch.endpoint('/:db:/_design/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
-    def copy(self, couch_data):
-        return couch_data
+    # @couch.endpoint('/:db:/_design/:docid:', method='copy', query_keys=AllowedKeys.DATABASE__DOCUMENT__COPY__PARAMS)
+    # def copy(self, couch_data):
+    #     return couch_data
