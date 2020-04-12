@@ -104,6 +104,24 @@ def test_save_new_doc(httpserver: test_server.HTTPServer):
     assert response == expected
 
 
+def test_delete(httpserver: test_server.HTTPServer):
+    expected_json = {"ok": True}
+
+    httpserver.expect_oneshot_request("/somedb", method="DELETE").respond_with_json(expected_json)
+    response = couch.server.delete_database(uri_segments={'db': 'somedb'})
+    assert response == expected_json
+
+    for code in [202]:
+        httpserver.expect_oneshot_request("/somedb", method="DELETE").respond_with_json({}, status=code)
+        response = couch.server.delete_database()
+        assert isinstance(response, couchapy.CouchError) is False
+
+    for code in [400, 401, 404, 500]:
+        httpserver.expect_oneshot_request("/somedb", method="DELETE").respond_with_json({}, status=code)
+        response = couch.server.delete_database()
+        assert isinstance(response, couchapy.CouchError) is True
+
+
 def test_flush(httpserver: test_server.HTTPServer):
     expected = {
         "instance_start_time": "0",
@@ -112,6 +130,44 @@ def test_flush(httpserver: test_server.HTTPServer):
 
     httpserver.expect_request("/_local/_ensure_full_commit", method="POST").respond_with_json(expected)
     response = couch.db.flush(uri_segments={'db': '_local'})
+    assert response == expected
+
+
+def test_purge(httpserver: test_server.HTTPServer):
+    expected = {
+        "purge_seq": None,
+        "purged": {
+            "c6114c65e295552ab1019e2b046b10e": {
+                "purged": ["3-c50a32451890a3f1c3e423334cc92745"]
+            }
+        }
+    }
+
+    request_data = {
+        "c6114c65e295552ab1019e2b046b10e": [
+            "3-b06fcd1c1c9e0ec7c480ee8aa467bf3b",
+            "3-c50a32451890a3f1c3e423334cc92745"
+        ]
+    }
+
+    httpserver.expect_request("/_local/_purge", method="POST").respond_with_json(expected)
+    response = couch.db.purge(uri_segments={'db': '_local'}, data=request_data)
+    assert response == expected
+
+
+def test_get_purge_limit(httpserver: test_server.HTTPServer):
+    expected = 1000
+
+    httpserver.expect_request("/_local/_purged_infos_limit").respond_with_data("1000")
+    response = couch.db.get_purge_limit(uri_segments={'db': '_local'})
+    assert response == expected
+
+
+def test_set_purge_limit(httpserver: test_server.HTTPServer):
+    expected = {"ok": True}
+
+    httpserver.expect_request("/_local/_purged_infos_limit", method="PUT").respond_with_json(expected)
+    response = couch.db.set_purge_limit(uri_segments={'db': '_local'}, data=1000)
     assert response == expected
 
 
