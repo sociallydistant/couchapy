@@ -188,3 +188,28 @@ def test_delete(httpserver: test_server.HTTPServer):
         httpserver.expect_oneshot_request("/_local/FishStew", method="DELETE").respond_with_json({}, status=code)
         response = couch.db.docs.delete(uri_segments={'db': '_local', 'docid': 'FishStew'})
         assert isinstance(response, couchapy.CouchError) is True
+
+
+def test_attachment_headers(httpserver: test_server.HTTPServer):
+    expected = {
+        "Accept-Ranges": "none",
+        "Cache-Control": "must-revalidate",
+        "Content-Encoding": "gzip",
+        "Content-Length": '2',
+        "Content-Type": "application/json",
+        "Date": "Thu, 15 Aug 2013 12:42:42 GMT",
+        "ETag": "vVa/YgiE1+Gh0WfoFJAcSg==",
+        "Server": "CouchDB (Erlang/OTP)"
+    }
+
+    httpserver.expect_request("/_local/doc_name/attachment", method="HEAD").respond_with_json({}, headers=expected)
+    response = couch.db.docs.attachment.headers(uri_segments={'db': '_local', 'docid': 'doc_name', 'attname': 'attachment'})
+    assert response == expected
+
+
+def test_get_attachment(httpserver: test_server.HTTPServer):
+    expected = "attachment_raw_data"
+
+    httpserver.expect_request("/_local/doc_name/attachment_name", method="GET").respond_with_data(expected)
+    response = couch.db.docs.attachment.get(uri_segments={'db': '_local', 'docid': 'doc_name', 'attname': 'attachment_name'})
+    assert response == expected

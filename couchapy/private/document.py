@@ -1,4 +1,5 @@
 import  couchapy.decorators as couch
+import  couchapy.private.attachment as _attachment
 
 
 class _Documents():
@@ -12,6 +13,7 @@ class _Documents():
         self.parent = parent.parent
         self._db = parent._db
         self._predefined_segments = parent._predefined_segments
+        self.attachment = _attachment._Attachment(self)
 
     @couch.endpoint('/:db:/:docid:', method='head', query_keys=couch.AllowedKeys.DATABASE__DOCUMENT__PARAMS)
     def headers(self, couch_data, **kwargs):

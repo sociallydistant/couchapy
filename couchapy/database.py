@@ -107,26 +107,6 @@ class Database():
 
 
 
-    @couch.endpoint('/:db:/:docid:/:attname:', method='head', query_keys=couch.AllowedKeys.DATABASE__ATTACHMENT__INFO_PARAMS)
-    def get_attachment_info(self, couch_data):
-        return couch_data
-
-    # TODO: implement ability for endpoint to return non-json data
-    @couch.endpoint('/:db:/:docid:/:attname:', query_keys=couch.AllowedKeys.DATABASE__ATTACHMENT__GET__PARAMS)
-    def get_attachment(self, couch_data):
-        return couch_data
-
-    # TODO: confirm ability to pass custom headers to endpoint decorator
-    @couch.endpoint('/:db:/:docid:/:attname:', method='put', query_keys=couch.AllowedKeys.DATABASE__ATTACHMENT__SAVE__PARAMS)
-    def save_attachment(self, couch_data):
-        return couch_data
-
-    @couch.endpoint('/:db:/:docid:/:attname:', method='delete', query_keys=couch.AllowedKeys.DATABASE__ATTACHMENT__DELETE__PARAMS)
-    def delete_attachment(self, couch_data):
-        return couch_data
-
-
-
     @couch.endpoint('/:db:/_bulk_get', method='post',
                     data_keys=couch.AllowedKeys.DATABASE__BULK_GET__DATA,
                     query_keys=couch.AllowedKeys.DATABASE__BULK_GET__PARAMS)
