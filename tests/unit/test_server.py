@@ -638,3 +638,50 @@ def test_get_uptime(httpserver: test_server.HTTPServer):
     httpserver.expect_request("/_node/_local/_system", method="GET").respond_with_json(expected_json)
     response = couch.server.uptime(uri_segments={'node_name': '_local'})
     assert response == expected_json['uptime']
+
+
+def test_database_create(httpserver: test_server.HTTPServer):
+    expected_db_does_not_exist = {"ok": True}
+    expected_db_exists = {
+        "error": "file_exists",
+        "reason": "The database could not be created, the file already exists."
+    }
+
+    httpserver.expect_oneshot_request("/somedb", method="PUT").respond_with_json(expected_db_does_not_exist)
+    response = couch.server.create_database(uri_segments={'db': 'somedb'})
+    assert response == expected_db_does_not_exist
+
+    for code in [202]:
+        httpserver.expect_oneshot_request("/somedb", method="PUT").respond_with_json({}, status=code)
+        response = couch.server.create_database(uri_segments={'db': 'somedb'})
+        assert isinstance(response, couchapy.CouchError) is False
+
+    for code in [400, 401, 412, 500]:
+        httpserver.expect_oneshot_request("/somedb", method="PUT").respond_with_json({}, status=code)
+        response = couch.server.create_database(uri_segments={'db': 'somedb'})
+        assert isinstance(response, couchapy.CouchError) is True
+
+    httpserver.expect_oneshot_request("/somedb", method="PUT").respond_with_json(expected_db_exists, status=412)
+    response = couch.server.create_database(uri_segments={'db': 'somedb'})
+    assert isinstance(response, couchapy.CouchError)
+    assert response.error == expected_db_exists['error']
+    assert response.reason == expected_db_exists['reason']
+    assert response.status_code == 412
+
+
+def test_database_delete(httpserver: test_server.HTTPServer):
+    expected_json = {"ok": True}
+
+    httpserver.expect_oneshot_request("/somedb", method="DELETE").respond_with_json(expected_json)
+    response = couch.server.delete_database(uri_segments={'db': 'somedb'})
+    assert response == expected_json
+
+    for code in [202]:
+        httpserver.expect_oneshot_request("/somedb", method="DELETE").respond_with_json({}, status=code)
+        response = couch.server.delete_database()
+        assert isinstance(response, couchapy.CouchError) is False
+
+    for code in [400, 401, 404, 500]:
+        httpserver.expect_oneshot_request("/somedb", method="DELETE").respond_with_json({}, status=code)
+        response = couch.server.delete_database()
+        assert isinstance(response, couchapy.CouchError) is True

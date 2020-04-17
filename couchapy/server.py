@@ -158,3 +158,21 @@ class Server():
         Usage: couchdb_instance.get_uptime(uri_segments={'node_name': '_local'})
         """
         return couch_data if isinstance(couch_data, couchapy.error.CouchError) else couch_data.get('uptime', -1)
+
+    @couch.endpoint('/:db:', method='put', query_keys=couch.AllowedKeys.DATABASE__DB__CREATE_PARAMS)
+    def create_database(self, couch_data):
+        """
+        Create a new database
+
+        See https://docs.couchdb.org/en/stable/api/database/common.html#put--db
+        """
+        return couch_data
+
+    @couch.endpoint('/:db:', method='delete')
+    def delete_database(self, couch_data):
+        """
+        Delete an existing database
+
+        See https://docs.couchdb.org/en/stable/api/database/common.html#delete--db
+        """
+        return couch_data

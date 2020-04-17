@@ -1,6 +1,7 @@
-from functools import wraps
-import requests
-from re import sub
+from    functools import wraps
+import  json
+import  requests
+from    re import sub
 
 import  couchapy.error
 
@@ -82,7 +83,19 @@ def endpoint(*args, **kwargs):
 
             if (response.status_code in [requests.codes['ok'], requests.codes['created'], requests.codes['accepted']]):
                 self.parent.session.set_auth_token_from_headers(response.headers)
-                ret_val = response.json()
+
+                ret_val = None
+
+                try:
+                    ret_val = response.json()
+                except json.JSONDecodeError:
+                    try:
+                        ret_val = response.text
+                    except Exception:
+                        raise
+                except Exception:
+                    raise
+
                 if isinstance(ret_val, str):
                     ret_val = {'data': ret_val}
             else:
@@ -91,6 +104,8 @@ def endpoint(*args, **kwargs):
                 if isinstance(result, str):
                     result = {'data': result}
                     ret_val = couchapy.error.CouchError(**result)
+                elif isinstance(result, dict) and 'error' in result:
+                    ret_val = couchapy.error.CouchError(error=result['error'], reason=result['reason'], status_code=response.status_code)
                 else:
                     ret_val = couchapy.error.CouchError(error=response.reason, reason=response.reason, status_code=response.status_code)
 
