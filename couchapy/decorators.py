@@ -50,6 +50,9 @@ def endpoint(*args, **kwargs):
             dynamic_segments = getattr(self, '_predefined_segments', {})
             dynamic_segments.update(kwargs.get('uri_segments', {}))
             cookies = {'AuthSession': self.parent.session.auth_token or None}
+            headers = self.parent._headers
+            headers.update(kwargs.get('headers', {}))
+
             uri = f'{self.parent.host}:{self.parent.port}{_build_uri(endpoint, dynamic_segments)}'
 
             if ('data' in kwargs):
@@ -59,15 +62,22 @@ def endpoint(*args, **kwargs):
                 _process_filter_format(allowed_query_parameter_keys, kwargs.get('params'))
 
             if (request_method == 'post'or request_method == 'put'):
-                response = request_action(uri,
-                                          headers=self.parent._headers,
-                                          cookies=cookies,
-                                          params=kwargs.get('params', None),
-                                          json=kwargs.get('data'))
+                if headers.get('Content-type', None) == 'application/json':
+                    response = request_action(uri,
+                                              headers=headers,
+                                              cookies=cookies,
+                                              params=kwargs.get('params', None),
+                                              json=kwargs.get('data'))
+                else:
+                    response = request_action(uri,
+                                              headers=headers,
+                                              cookies=cookies,
+                                              params=kwargs.get('params', None),
+                                              data=kwargs.get('data'))
 
             elif request_method == 'head':
                 response = request_action(uri,
-                                          headers=self.parent._headers,
+                                          headers=headers,
                                           cookies=cookies,
                                           params=kwargs.get('params', None),
                                           json=kwargs.get('data'))
@@ -77,7 +87,7 @@ def endpoint(*args, **kwargs):
                           status_code=response.status_code)
             else:
                 response = request_action(uri,
-                                          headers=self.parent._headers,
+                                          headers=headers,
                                           cookies=cookies,
                                           params=kwargs.get('params', None))
 
@@ -109,7 +119,7 @@ def endpoint(*args, **kwargs):
                 else:
                     ret_val = couchapy.error.CouchError(error=response.reason, reason=response.reason, status_code=response.status_code)
 
-            return fn(self, ret_val)
+            return fn(self, ret_val, response=response)
         return wrapper
     return set_endpoint
 

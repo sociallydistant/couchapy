@@ -1,6 +1,8 @@
 import  couchapy
 import  pytest
 import  pytest_httpserver as test_server
+import  requests
+from    werkzeug.wrappers.response import Response
 
 
 @pytest.fixture
@@ -179,11 +181,11 @@ def test_attachment_headers(httpserver: test_server.HTTPServer):
 
 
 def test_get_attachment(httpserver: test_server.HTTPServer):
-    expected = "attachment_raw_data"
+    dummy_response = Response()
 
-    httpserver.expect_request("/_local/_design/ddoc_name/attachment_name", method="GET").respond_with_data(expected)
+    httpserver.expect_request("/_local/_design/ddoc_name/attachment_name", method="GET").respond_with_response(dummy_response)
     response = couch.db.design.attachment.get(uri_segments={'db': '_local', 'ddoc': 'ddoc_name', 'attname': 'attachment_name'})
-    assert response == expected
+    assert isinstance(response, requests.Response)
 
 
 def test_get(httpserver: test_server.HTTPServer):

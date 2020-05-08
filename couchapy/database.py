@@ -45,14 +45,14 @@ class Database():
             return True
 
     @couch.endpoint('/:db:')
-    def info(self, couch_data):
+    def info(self, couch_data, **kwargs):
         """
         See https://docs.couchdb.org/en/stable/api/database/common.html#get--db
         """
         return couch_data
 
     @couch.endpoint('/:db:', method='post', query_keys=couch.AllowedKeys.DATABASE__DB__SAVE__PARAMS)
-    def save(self, couch_data):
+    def save(self, couch_data, **kwargs):
         """
         Saves a document to the specified database
 
@@ -63,7 +63,7 @@ class Database():
         return couch_data
 
     @couch.endpoint('/:db:/_ensure_full_commit', method='post')
-    def flush(self, couch_data):
+    def flush(self, couch_data, **kwargs):
         """
         Force a manual request to commit documents created, updated, or deleted using CouchDB batch mode to persistent
         storage.
@@ -77,88 +77,85 @@ class Database():
         return couch_data
 
     @couch.endpoint('/:db:/_compact', method='post')
-    def compact(self, couch_data):
+    def compact(self, couch_data, **kwargs):
         """
         See https://docs.couchdb.org/en/stable/api/database/compact.html#db-compact
         """
         return couch_data
 
     @couch.endpoint('/:db:/_purge', method='post')
-    def purge(self, couch_data):
+    def purge(self, couch_data, **kwargs):
         """
         See https://docs.couchdb.org/en/stable/api/database/misc.html#post--db-_purge
         """
         return couch_data
 
     @couch.endpoint('/:db:/_purged_infos_limit')
-    def get_purge_limit(self, couch_data):
+    def get_purge_limit(self, couch_data, **kwargs):
         """
         See https://docs.couchdb.org/en/stable/api/database/misc.html#get--db-_purged_infos_limit
         """
         return couch_data
 
     @couch.endpoint('/:db:/_purged_infos_limit', method='put')
-    def set_purge_limit(self, couch_data):
+    def set_purge_limit(self, couch_data, **kwargs):
         """
         See https://docs.couchdb.org/en/stable/api/database/misc.html#put--db-_purged_infos_limit
         """
         return couch_data
 
-
-
-
     @couch.endpoint('/:db:/_bulk_get', method='post',
                     data_keys=couch.AllowedKeys.DATABASE__BULK_GET__DATA,
                     query_keys=couch.AllowedKeys.DATABASE__BULK_GET__PARAMS)
-    def bulk_get(self, couch_data):
+    def bulk_get(self, couch_data, **kwargs):
         return couch_data
 
     @couch.endpoint('/:db:/_bulk_docs', method='post', data_keys=couch.AllowedKeys.DATABASE__BULK_DOCS__DATA)
-    def bulk_save(self, couch_data):
+    def bulk_save(self, couch_data, **kwargs):
         return couch_data
 
     @couch.endpoint('/:db:/_find', method='post', data_keys=couch.AllowedKeys.DATABASE__FIND__DATA)
-    def find(self, couch_data):
+    def find(self, couch_data, **kwargs):
         return couch_data
 
     # TODO: confirm body or query parameters.  couchdb docs suggest query parameters and not json body data
     @couch.endpoint('/:db:/_index', method='post', data_keys=couch.AllowedKeys.DATABASE__INDEX__DATA)
-    def save_index(self, couch_data):
+    def save_index(self, couch_data, **kwargs):
         return couch_data
 
     @couch.endpoint('/:db:/_index', query_keys=couch.AllowedKeys.VIEW__PARAMS)
-    def get_indices(self, couch_data):
+    def get_indices(self, couch_data, **kwargs):
         return couch_data
 
     @couch.endpoint('/:db:/_index/:ddoc:/json/:index:')
-    def get_index(self, couch_data):
+    def get_index(self, couch_data, **kwargs):
         return couch_data
 
     @couch.endpoint('/:db:/_index/:ddoc:/json/:index:', method='delete')
-    def delete_index(self, couch_data):
+    def delete_index(self, couch_data, **kwargs):
         return couch_data
 
     @couch.endpoint('/:db:/_explain', method='post', data_keys=couch.AllowedKeys.DATABASE__FIND__DATA)
-    def explain(self, couch_data):
+    def explain(self, couch_data, **kwargs):
         return couch_data
 
     @couch.endpoint('/:db:/_shards')
-    def get_shards(self, couch_data):
+    def get_shards(self, couch_data, **kwargs):
         return couch_data
 
     @couch.endpoint('/:db:/_shards/:shard:')
-    def get_shard(self, couch_data):
+    def get_shard(self, couch_data, **kwargs):
         return couch_data
 
     @couch.endpoint('/:db:/_sync_shards', method='post')
-    def sync_shards(self, couch_data):
+    def sync_shards(self, couch_data, **kwargs):
         return couch_data
 
     @couch.endpoint('/:db:/_changes', query_keys=couch.AllowedKeys.DATABASE__CHANGES__PARAMS)
-    def get_changes(self, couch_data):
+    def get_changes(self, couch_data, **kwargs):
         return couch_data
 
     # TODO: make note in this doc string about the lack of data_keys since it supports query keys as well as find data keys
     @couch.endpoint('/:db:/_changes', method='post', query_keys=couch.AllowedKeys.DATABASE__CHANGES__PARAMS)
-    def get_filtered_changes(self, couch_data):
+    def get_filtered_changes(self, couch_data, **kwargs):
         return couch_data

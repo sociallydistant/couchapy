@@ -14,7 +14,7 @@ class _Revisions():
         self._predefined_segments = parent._predefined_segments
 
     @couch.endpoint('/:db:/_missing_revs', method='post')
-    def missing(self, couch_data):
+    def missing(self, couch_data, **kwargs):
         """
         Example:
         missing_revs = couch.db.revs.missing(data={"docid": ["rev1", "rev2", "rev3"]})
@@ -28,21 +28,21 @@ class _Revisions():
         return couch_data
 
     @couch.endpoint('/:db:/_revs_diff', method='post')
-    def diff(self, couch_data):
+    def diff(self, couch_data, **kwargs):
         """
         See https://docs.couchdb.org/en/stable/api/database/misc.html#post--db-_revs_diff
         """
         return couch_data
 
     @couch.endpoint('/:db:/_revs_limit')
-    def get_limit(self, couch_data):
+    def get_limit(self, couch_data, **kwargs):
         """
         See https://docs.couchdb.org/en/stable/api/database/misc.html#get--db-_revs_limit
         """
         return couch_data
 
     @couch.endpoint('/:db:/_revs_limit', method='put')
-    def set_limit(self, couch_data):
+    def set_limit(self, couch_data, **kwargs):
         """
         See https://docs.couchdb.org/en/stable/api/database/misc.html#put--db-_revs_limit
         """
