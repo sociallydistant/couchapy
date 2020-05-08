@@ -15,7 +15,7 @@ class _Security():
         self._predefined_segments = parent._predefined_segments
 
     @couch.endpoint('/:db:/_security')
-    def get(self, couch_data):
+    def get(self, couch_data, **kwargs):
         """
         Get the database security document
 
@@ -24,7 +24,7 @@ class _Security():
         return couch_data
 
     @couch.endpoint('/:db:/_security', method='put', data_keys=couch.AllowedKeys.DATABASE__SECURITY__DATA)
-    def save(self, couch_data):
+    def save(self, couch_data, **kwargs):
         """
         Sets the database security document
 

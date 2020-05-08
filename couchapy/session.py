@@ -43,18 +43,18 @@ class Session():
             self.auth_token = headers.get('Set-Cookie').split(';', 2)[0].split('=')[1]
 
     @couch.endpoint('/_session', method='post', data_keys={'name': str, 'password': str})
-    def authenticate(self, doc):
+    def authenticate(self, doc, **kwargs):
         return doc
 
     @couch.endpoint('/_session')
-    def get_session_info(self, doc):
+    def get_session_info(self, doc, **kwargs):
         return doc
 
     @couch.endpoint('/_session', method='delete')
-    def close(self, doc):
+    def close(self, doc, **kwargs):
         return doc if isinstance(doc, couchapy.error.CouchError) else None
 
-    def authenticate_via_proxy(self, username, roles, token):
+    def authenticate_via_proxy(self, username, roles, token, **kwargs):
         """
         Not implemented. See:
         https://docs.couchdb.org/en/stable/api/server/authn.html#proxy-authentication
@@ -62,7 +62,7 @@ class Session():
         """
         pass
 
-    def renew_session(self):
+    def renew_session(self, **kwargs):
         """
         Alias for get_session_info()
         """

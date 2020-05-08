@@ -34,18 +34,19 @@ class _Attachment():
         See https://docs.couchdb.org/en/stable/api/document/attachments.html#get--db-docid-attname
         """
         @couch.endpoint(f'/:db:{self._type}:{self._doc_key}:/:attname:', query_keys=couch.AllowedKeys.DATABASE__ATTACHMENT__GET__PARAMS)
-        def get_attachment(self, couch_data):
-            return couch_data['data'] if 'data' in couch_data else couch_data
+        def get_attachment(self, couch_data, **wargs):
+            return wargs.get('response')
+            # return couch_data['data'] if 'data' in couch_data else couch_data
 
         return get_attachment(self, **kwargs)
 
     # TODO: confirm ability to pass custom headers to endpoint decorator
     def save(self, *args, **kwargs):
         @couch.endpoint(f'/:db:{self._type}:{self._doc_key}:/:attname:', method='put', query_keys=couch.AllowedKeys.DATABASE__ATTACHMENT__SAVE__PARAMS)
-        def save_attachment(self, couch_data):
+        def save_attachment(self, couch_data, **wargs):
             return couch_data
 
-        return save_attachment(self, **kwargs)
+        return save_attachment(self, *args, **kwargs)
 
     def delete(self, *args, **kwargs):
         @couch.endpoint(f'/:db:{self._type}:{self._doc_key}:/:attname:', method='delete', query_keys=couch.AllowedKeys.DATABASE__ATTACHMENT__DELETE__PARAMS)
