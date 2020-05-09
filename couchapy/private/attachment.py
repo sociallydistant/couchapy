@@ -50,7 +50,7 @@ class _Attachment():
 
     def delete(self, *args, **kwargs):
         @couch.endpoint(f'/:db:{self._type}:{self._doc_key}:/:attname:', method='delete', query_keys=couch.AllowedKeys.DATABASE__ATTACHMENT__DELETE__PARAMS)
-        def delete_attachment(self, couch_data):
+        def delete_attachment(self, couch_data, **wargs):
             return couch_data
 
         return delete_attachment(self, **kwargs)
