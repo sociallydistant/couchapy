@@ -1,3 +1,4 @@
+from    copy import deepcopy
 from    functools import wraps
 import  json
 import  requests
@@ -47,7 +48,7 @@ def endpoint(*args, **kwargs):
 
         @wraps(fn)
         def wrapper(self, *query_params, **kwargs):
-            dynamic_segments = getattr(self, '_predefined_segments', {})
+            dynamic_segments = deepcopy(getattr(self, '_predefined_segments', {}))
             dynamic_segments.update(kwargs.get('uri_segments', {}))
             cookies = {'AuthSession': self.parent.session.auth_token or None}
             headers = self.parent._headers
