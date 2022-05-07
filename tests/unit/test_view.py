@@ -3,9 +3,6 @@ import  pytest
 import  pytest_httpserver as test_server
 
 
-@pytest.fixture
-def httpserver_listen_address():
-    return ("127.0.0.1", 8000)
 
 
 @pytest.fixture(autouse=True)
