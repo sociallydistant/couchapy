@@ -34,7 +34,15 @@ def test_headers(httpserver: test_server.HTTPServer):
 
     httpserver.expect_request("/_local", method="HEAD").respond_with_json({}, headers=expected, status=404)
     response = couch.db.headers(uri_segments={'db': '_local'})
-    assert response == expected
+
+    assert 'Cache-Control' in response
+    assert response['Cache-Control'] == expected['Cache-Control']
+    assert 'Content-Length' in response
+    assert response['Content-Length'] == expected['Content-Length']
+    assert 'Content-Type' in response
+    assert response['Content-Type'] == expected['Content-Type']
+    assert 'Date' in response
+    assert 'Server' in response
 
 
 def test_database_exists(httpserver: test_server.HTTPServer):

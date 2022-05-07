@@ -130,7 +130,16 @@ def test_headers(httpserver: test_server.HTTPServer):
 
     httpserver.expect_request("/_local/_design/ddoc_name", method="HEAD").respond_with_json({}, headers=expected)
     response = couch.db.design.headers(uri_segments={'db': '_local', 'ddoc': 'ddoc_name'})
-    assert response == expected
+
+    assert 'Cache-Control' in response
+    assert response['Cache-Control'] == expected['Cache-Control']
+    assert 'Content-Length' in response
+    assert response['Content-Length'] == expected['Content-Length']
+    assert 'Content-Type' in response
+    assert response['Content-Type'] == expected['Content-Type']
+    assert 'Date' in response
+    assert 'Server' in response
+
 
 
 def test_info(httpserver: test_server.HTTPServer):
