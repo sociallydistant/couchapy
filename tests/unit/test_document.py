@@ -201,7 +201,23 @@ def test_attachment_headers(httpserver: test_server.HTTPServer):
 
     httpserver.expect_request("/_local/doc_name/attachment", method="HEAD").respond_with_json({}, headers=expected)
     response = couch.db.docs.attachment.headers(uri_segments={'db': '_local', 'docid': 'doc_name', 'attname': 'attachment'})
-    assert response == expected
+
+    assert 'Accept-Ranges' in response
+    assert response['Accept-Ranges'] == expected['Accept-Ranges']
+    assert 'Cache-Control' in response
+    assert response['Cache-Control'] == expected['Cache-Control']
+    assert 'Content-Encoding' in response
+    assert response['Content-Encoding'] == expected['Content-Encoding']
+    assert 'Content-Length' in response
+    assert response['Content-Length'] == expected['Content-Length']
+    assert 'Content-Type' in response
+    assert response['Content-Type'] == expected['Content-Type']
+    assert 'Date' in response
+    assert response['Date'] == expected['Date']
+    assert 'ETag' in response
+    assert response['ETag'] == expected['ETag']
+    assert 'Server' in response
+    assert response['Server'] == expected['Server']
 
 
 def test_get_attachment(httpserver: test_server.HTTPServer):
