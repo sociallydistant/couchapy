@@ -5,11 +5,6 @@ import  requests
 from    werkzeug.wrappers.response import Response
 
 
-@pytest.fixture
-def httpserver_listen_address():
-    return ("127.0.0.1", 8000)
-
-
 @pytest.fixture(autouse=True)
 def setup():
     """ setup any state specific to the execution of the given module."""
