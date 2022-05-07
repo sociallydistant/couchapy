@@ -108,12 +108,12 @@ def test_delete(httpserver: test_server.HTTPServer):
 
     for code in [202]:
         httpserver.expect_oneshot_request("/somedb", method="DELETE").respond_with_json({}, status=code)
-        response = couch.server.delete_database()
+        response = couch.server.delete_database(uri_segments={'db': 'somedb'})
         assert isinstance(response, couchapy.CouchError) is False
 
     for code in [400, 401, 404, 500]:
         httpserver.expect_oneshot_request("/somedb", method="DELETE").respond_with_json({}, status=code)
-        response = couch.server.delete_database()
+        response = couch.server.delete_database(uri_segments={'db': 'somedb'})
         assert isinstance(response, couchapy.CouchError) is True
 
 

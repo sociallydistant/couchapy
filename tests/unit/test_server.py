@@ -466,9 +466,6 @@ def test_get_node_server_stat(httpserver: test_server.HTTPServer):
     response = couch.server.node_stat(uri_segments={'node_name': '_local', 'stat': 'couchdb/request_time'})
     assert response == expected_json
 
-    response = couch.server.node_stat()
-    assert response == expected_json
-
 
 def test_get_node_system_stats(httpserver: test_server.HTTPServer):
     expected_json = {"uptime": 259, "memory": 1000}
@@ -673,10 +670,10 @@ def test_database_delete(httpserver: test_server.HTTPServer):
 
     for code in [202]:
         httpserver.expect_oneshot_request("/somedb", method="DELETE").respond_with_json({}, status=code)
-        response = couch.server.delete_database()
+        response = couch.server.delete_database(uri_segments={'db': 'somedb'})
         assert isinstance(response, couchapy.CouchError) is False
 
     for code in [400, 401, 404, 500]:
         httpserver.expect_oneshot_request("/somedb", method="DELETE").respond_with_json({}, status=code)
-        response = couch.server.delete_database()
+        response = couch.server.delete_database(uri_segments={'db': 'somedb'})
         assert isinstance(response, couchapy.CouchError) is True
