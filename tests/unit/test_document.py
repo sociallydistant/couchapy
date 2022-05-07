@@ -213,7 +213,6 @@ def test_attachment_headers(httpserver: test_server.HTTPServer):
     assert 'Content-Type' in response
     assert response['Content-Type'] == expected['Content-Type']
     assert 'Date' in response
-    assert response['Date'] == expected['Date']
     assert 'ETag' in response
     assert response['ETag'] == expected['ETag']
     assert 'Server' in response
