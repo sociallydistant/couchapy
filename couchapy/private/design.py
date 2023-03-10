@@ -1,6 +1,7 @@
 import  couchapy.decorators as couch
 import  couchapy.private.attachment as _attachment
 import  couchapy.private.view as _view
+import  couchapy.private.search as _search
 
 
 class _DesignDocument():
@@ -16,6 +17,7 @@ class _DesignDocument():
         self._predefined_segments = parent._predefined_segments
         self.attachment = _attachment._DesignDocAttachment(self)
         self.view = _view._View(self)
+        self.search = _search._Search(self)
 
     @couch.endpoint('/:db:/_design_docs', method='post', data_keys=couch.AllowedKeys.DATABASE__DESIGN_DOCS__DATA)
     def get_by_post(self, couch_data, **kwargs):
