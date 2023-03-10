@@ -3,11 +3,6 @@ import  pytest
 from    pytest_httpserver import HTTPServer
 
 
-@pytest.fixture
-def httpserver_listen_address():
-    return ("127.0.0.1", 8000)
-
-
 def test_authenticate(httpserver: HTTPServer):
     json_response = {"ok": True, "name": "root", "roles": ["_admin"]}
 

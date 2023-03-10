@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="couchapy",
-    version="0.0.1-alpha.2",
+    version="version='0.0.2'",
     author="Lee Lunn",
     author_email="lee.lunn@gmail.com",
     description="Library for interacting with CouchDB",
