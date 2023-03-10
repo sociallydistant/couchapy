@@ -141,8 +141,9 @@ class AllowedKeys():
 
     SERVER__DB_UPDATES__PARAMS = {'feed': str, 'timeout': int, 'heartbeat': int, 'since': str}
     SERVER__REPLICATE__DATA = {'cancel': bool, 'continuous': bool,
-                               'create_target': bool, 'doc_ids': [],
-                               'filter': str, 'proxy': str,
+                               'create_target': bool, 'create_target_params': {},
+                               'doc_ids': [], 'filter': str, 'selector': {},
+                               'source_proxy': str, 'target_proxy': str,
                                'source': {}, 'target': {}}
     SERVER__SCHEDULER_JOBS__PARAMS = {'limit': int, 'skip': int}
     SERVER__SCHEDULER_DOCS__PARAMS = {'limit': int, 'skip': int}
