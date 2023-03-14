@@ -1,5 +1,6 @@
 import  couchapy.decorators as couch
 import  couchapy.error
+import  couchapy.private.changes as _changes
 import  couchapy.private.design as _design
 import  couchapy.private.document as _docs
 import  couchapy.private.local as _local
@@ -17,6 +18,7 @@ class Database():
         self.design = _design._DesignDocument(self)
         self.local = _local._LocalDocuments(self)
         self.docs = _docs._Documents(self)
+        self.changes = _changes._DatabaseChanges(self)
 
     @couch.endpoint('/:db:', method='head')
     def headers(self, couch_data, **kwargs):
@@ -149,13 +151,4 @@ class Database():
 
     @couch.endpoint('/:db:/_sync_shards', method='post')
     def sync_shards(self, couch_data, **kwargs):
-        return couch_data
-
-    @couch.endpoint('/:db:/_changes', query_keys=couch.AllowedKeys.DATABASE__CHANGES__PARAMS)
-    def get_changes(self, couch_data, **kwargs):
-        return couch_data
-
-    # TODO: make note in this doc string about the lack of data_keys since it supports query keys as well as find data keys
-    @couch.endpoint('/:db:/_changes', method='post', query_keys=couch.AllowedKeys.DATABASE__CHANGES__PARAMS)
-    def get_filtered_changes(self, couch_data, **kwargs):
         return couch_data

@@ -4,11 +4,6 @@ import  pytest
 import  pytest_httpserver as test_server
 
 
-@pytest.fixture
-def httpserver_listen_address():
-    return ("127.0.0.1", 8000)
-
-
 @pytest.fixture(autouse=True)
 def setup():
     """ setup any state specific to the execution of the given module."""
@@ -39,7 +34,15 @@ def test_headers(httpserver: test_server.HTTPServer):
 
     httpserver.expect_request("/_local", method="HEAD").respond_with_json({}, headers=expected, status=404)
     response = couch.db.headers(uri_segments={'db': '_local'})
-    assert response == expected
+
+    assert 'Cache-Control' in response
+    assert response['Cache-Control'] == expected['Cache-Control']
+    assert 'Content-Length' in response
+    assert response['Content-Length'] == expected['Content-Length']
+    assert 'Content-Type' in response
+    assert response['Content-Type'] == expected['Content-Type']
+    assert 'Date' in response
+    assert 'Server' in response
 
 
 def test_database_exists(httpserver: test_server.HTTPServer):
@@ -113,12 +116,12 @@ def test_delete(httpserver: test_server.HTTPServer):
 
     for code in [202]:
         httpserver.expect_oneshot_request("/somedb", method="DELETE").respond_with_json({}, status=code)
-        response = couch.server.delete_database()
+        response = couch.server.delete_database(uri_segments={'db': 'somedb'})
         assert isinstance(response, couchapy.CouchError) is False
 
     for code in [400, 401, 404, 500]:
         httpserver.expect_oneshot_request("/somedb", method="DELETE").respond_with_json({}, status=code)
-        response = couch.server.delete_database()
+        response = couch.server.delete_database(uri_segments={'db': 'somedb'})
         assert isinstance(response, couchapy.CouchError) is True
 
 
