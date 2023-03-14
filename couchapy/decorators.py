@@ -104,6 +104,11 @@ def endpoint(*args, **kwargs):
                         ret_val = response.text
                     except Exception:
                         raise
+                except requests.exceptions.JSONDecodeError:
+                    try:
+                        ret_val = response.text
+                    except Exception:
+                        raise
                 except Exception:
                     raise
 
