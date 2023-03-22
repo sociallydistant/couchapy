@@ -31,7 +31,7 @@ def _build_uri(template: str, segments: dict):
         else:
             return segments[matches.group(1)]
 
-    return sub(':([\w_]+):', replace_with_segment, template)
+    return sub(r':([\w_]+):', replace_with_segment, template)
 
 
 def endpoint(*args, **kwargs):
@@ -62,7 +62,7 @@ def endpoint(*args, **kwargs):
             if ('params' in kwargs):
                 _process_filter_format(allowed_query_parameter_keys, kwargs.get('params'))
 
-            if (request_method == 'post'or request_method == 'put'):
+            if (request_method == 'post' or request_method == 'put'):
                 if headers.get('Content-type', None) == 'application/json':
                     response = request_action(uri,
                                               headers=headers,
@@ -141,8 +141,9 @@ class AllowedKeys():
 
     SERVER__DB_UPDATES__PARAMS = {'feed': str, 'timeout': int, 'heartbeat': int, 'since': str}
     SERVER__REPLICATE__DATA = {'cancel': bool, 'continuous': bool,
-                               'create_target': bool, 'doc_ids': [],
-                               'filter': str, 'proxy': str,
+                               'create_target': bool, 'create_target_params': {},
+                               'doc_ids': [], 'filter': str, 'selector': {},
+                               'source_proxy': str, 'target_proxy': str,
                                'source': {}, 'target': {}}
     SERVER__SCHEDULER_JOBS__PARAMS = {'limit': int, 'skip': int}
     SERVER__SCHEDULER_DOCS__PARAMS = {'limit': int, 'skip': int}
@@ -163,6 +164,15 @@ class AllowedKeys():
                     'limit': int, 'skip': int, 'reduce': bool, 'sorted': bool,
                     'stable': bool, 'stale': str,
                     'update': str, 'update_seq': bool}
+    SEARCH__PARAMS = {'bookmark': str, 'counts': {},
+                      'drilldown': {}, 'group_field': str,
+                      'group_sort': {}, 'highlight_fields': {},
+                      'highlight_pre_tag': str, 'highlight_post_tag': str,
+                      'highlight_number': int, 'highlight_size': int,
+                      'include_docs': bool, 'include_fields': {},
+                      'limit': int, 'q': str,
+                      'query': str, 'ranges': {},
+                      'sort': {}, 'stale': str}
     DATABASE__ALL_DOCS__DATA = {'keys': []}
     DATABASE__ALL_DOCS_QUERIES__DATA = {'queries': []}
     DATABASE__DESIGN_DOCS_QUERIES__DATA = {'queries': []}
