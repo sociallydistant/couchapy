@@ -1,5 +1,6 @@
 import  couchapy.decorators as couch
 import  couchapy.private.attachment as _attachment
+import  couchapy.private.design_doc_update_functions as _update
 import  couchapy.private.view as _view
 
 
@@ -16,6 +17,7 @@ class _DesignDocument():
         self._predefined_segments = parent._predefined_segments
         self.attachment = _attachment._DesignDocAttachment(self)
         self.view = _view._View(self)
+        self.update_function = _update._UpdateFunction(self)
 
     @couch.endpoint('/:db:/_design_docs', method='post', data_keys=couch.AllowedKeys.DATABASE__DESIGN_DOCS__DATA)
     def get_by_post(self, couch_data, **kwargs):
@@ -83,6 +85,8 @@ class _DesignDocument():
         See https://docs.couchdb.org/en/stable/api/document/common.html#delete--db-docid
         """
         return couch_data
+
+
 
     # TODO: implement custom verb handling in endpoint decorator
     # TODO: CouchDB COPY command uses custom headers to send data...need to implement a way to handle this too
